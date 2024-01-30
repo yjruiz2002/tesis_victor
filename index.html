@@ -77,12 +77,10 @@
                                 <div class="s-report-inner pr--20 pt--30 mb-3">
                                     <div class="icon"><i class="fa fa-btc"></i></div>
                                     <div class="s-report-title d-flex justify-content-between">
-                                        <h4 class="header-title mb-0">Bitcoin</h4>
-                                        <p>24 H</p>
+                                        <h4 class="header-title mb-0">HUMEDAD</h4>
                                     </div>
                                     <div class="d-flex justify-content-between pb-2">
-                                        <h2>$ 4567809,987</h2>
-                                        <span>- 45.87</span>
+                                        <h2 id="app_humedad"></h2>
                                     </div>
                                 </div>
                                 <canvas id="coin_sales1" height="100"></canvas>
@@ -93,12 +91,10 @@
                                 <div class="s-report-inner pr--20 pt--30 mb-3">
                                     <div class="icon"><i class="fa fa-btc"></i></div>
                                     <div class="s-report-title d-flex justify-content-between">
-                                        <h4 class="header-title mb-0">Bitcoin Dash</h4>
-                                        <p>24 H</p>
+                                        <h4 class="header-title mb-0">TEMPERATURA</h4>
                                     </div>
                                     <div class="d-flex justify-content-between pb-2">
-                                        <h2>$ 4567809,987</h2>
-                                        <span>- 45.87</span>
+                                        <h2 id="app_temperatura"></h2>
                                     </div>
                                 </div>
                                 <canvas id="coin_sales2" height="100"></canvas>
@@ -180,5 +176,66 @@
     <!-- all pie chart -->
     <script src="assets/js/pie-chart.js"></script>
     <script src="assets/js/scripts.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getDatabase, ref, set, get, child, onValue, orderByKey, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+    
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyCymg0Ho3HMgHht2DYgRzZSekn2aZyMzco",
+        authDomain: "tesis-esp.firebaseapp.com",
+        databaseURL: "https://tesis-esp-default-rtdb.firebaseio.com",
+        projectId: "tesis-esp",
+        storageBucket: "tesis-esp.appspot.com",
+        messagingSenderId: "998026311452",
+        appId: "1:998026311452:web:4daa62dae5d8230700acd9"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+       
+    
+        //get ref to database services
+        const db = getDatabase(app);
+    
+        const messageRef = ref(db, 'sensores/DHT11');
+    
+        // Retrieve all children of the messageRef node
+        setInterval(() => {
+            get(messageRef)
+            .then((snapshot) => {
+                var app_humedad = document.getElementById('app_humedad');
+                var app_temperatura = document.getElementById('app_temperatura');
+                if (snapshot.exists()) {
+                const children = snapshot.val();
+                // Get the keys of all children
+                const keys = Object.keys(children);
+                // Get the last key
+                const lastKey = keys[keys.length - 1];
+                // Get the value of the last child
+                const lastChild = children[lastKey];
+                // Convert the object to a string
+                const lastChildText = JSON.stringify(lastChild);
+                // Asigna el mensaje al elemento HTML
+                const objeto = JSON.parse(lastChildText);
+                const humedad = objeto['humedad'];
+                const temperatura = objeto['temperatura'];
+                app_humedad.innerText = JSON.stringify(humedad);
+                app_temperatura.innerText = JSON.stringify(temperatura);
+                // Attach a listener to automatically update on value changes
+                } else {
+                console.log("El nodo 'sensores/DHT11' no tiene hijos en la base de datos");
+                }
+            })
+            .catch((error) => {
+                console.error("Error al leer el mensaje:", error);
+            });
+        }, 5000);
+        
+    </script>
 </body>
 </html>
