@@ -88,11 +88,6 @@
     height: 100%;
 }
 
-.main-content {
-    width: 100%;
-    background: #F3F8FB;
-}
-
 .main-content-inner {
     padding: 0 30px 50px;
 }
@@ -803,7 +798,7 @@ ul.breadcrumbs {
 /*-------------------- 2.4 Fact Area ------------------- */
 
 .single-report {
-    background: #fff;
+    background: transparent;
     overflow: hidden;
     position: relative;
 }
@@ -832,8 +827,9 @@ ul.breadcrumbs {
 }
 
 .header-title {
-    font-family: 'Lato', sans-serif;
-    font-size: 18px;
+    font-family: 'Homer Simpson IA', sans-serif;
+    font-style: oblique;
+    font-size: 22px !important;
     font-weight: 600;
     letter-spacing: 0;
     color: #333;
@@ -852,10 +848,28 @@ ul.breadcrumbs {
     line-height: 20px;
 }
 
-.single-report h2 {
+.single-report h1 {
+    font-size: 50px;
+    color: #ffffff;
+    font-weight: 700;
+    font-style: oblique;
+    letter-spacing: 0;
+    margin: 0 auto;
+}
+
+.single-report h3 {
+    font-size: 30px;
+    color: #ffffff;
+    font-weight: 700;
+    font-style: oblique;
+    letter-spacing: 0;
+    margin: 0 auto;
+}
+
+.single-report h4 {
     font-size: 26px;
-    color: #565656;
-    font-weight: 500;
+    color: #ffffff;
+    font-weight: 1000;
     letter-spacing: 0;
 }
 
@@ -1493,29 +1507,6 @@ table.dbkit-table tr td {
     left: -20px;
     z-index: 1;
     opacity: 0;
-}
-
-@-webkit-keyframes "pulse" {
-    0% {
-        -webkit-transform: scale(0);
-        opacity: 0.0;
-    }
-    25% {
-        -webkit-transform: scale(0);
-        opacity: 0.1;
-    }
-    50% {
-        -webkit-transform: scale(0.1);
-        opacity: 0.3;
-    }
-    75% {
-        -webkit-transform: scale(0.5);
-        opacity: 0.5;
-    }
-    100% {
-        -webkit-transform: scale(1);
-        opacity: 0.0;
-    }
 }
 
 .testimonial-carousel {

@@ -22,6 +22,14 @@
     <link rel="stylesheet" href="assets/css/responsive.css">
     <!-- modernizr css -->
     <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
+    <style>
+        .main-content-inner {
+            width: 100%;
+            max-height: 100%;
+            background-image: url("assets/images/fonts/fondo3.jpg");
+            justify-content: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -46,74 +54,70 @@
         <!-- sidebar menu area end -->
         <!-- main content area start -->
         <div class="main-content">
-            
-            <!-- header area end -->
-            <!-- page title area start -->
-            <div class="page-title-area">
-                <div class="row align-items-center">
-                    <div class="col-sm-6">
-                        <div class="breadcrumbs-area clearfix">
-                            <h4 class="page-title pull-left">ME GUSTAS</h4>
+            <div class="main-content-inner">
+                 <!-- page title area start -->
+                <div class="page-title-area">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <div class="breadcrumbs-area clearfix">
+                                <h4 class="page-title pull-left">ME GUSTAS</h4>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6 clearfix">
-                        <div class="user-profile pull-right">
-                            <img class="avatar user-thumb" src="assets/images/author/avatar.png" alt="avatar">
-                            <h4 class="user-name dropdown-toggle" data-toggle="dropdown">Victor Briceño<i class="fa fa-angle-down"></i></h4>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="login.html">Log Out</a>
+                        <div class="col-sm-6 clearfix">
+                            <div class="user-profile pull-right">
+                                <img class="avatar user-thumb" src="assets/images/author/avatar.png" alt="avatar">
+                                <h4 class="user-name dropdown-toggle" data-toggle="dropdown">Victor Briceño<i class="fa fa-angle-down"></i></h4>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="login.html">Log Out</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- page title area end -->
-            <div class="main-content-inner">
+                <!-- page title area end -->
                 <!-- sales report area start -->
                 <div class="sales-report-area mt-5 mb-5">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="single-report mb-xs-30">
                                 <div class="s-report-inner pr--20 pt--30 mb-3">
-                                    <div class="icon"><i class="fa fa-btc"></i></div>
-                                    <div class="s-report-title d-flex justify-content-between">
+                                    <div class="icon"><i class="fa fa-cloud"></i></div>
+                                    <div class="s-report-title d-flex align-items-center">
                                         <h4 class="header-title mb-0">HUMEDAD</h4>
                                     </div>
                                     <div class="d-flex justify-content-between pb-2">
-                                        <h2 id="app_humedad"></h2>
+                                        <h1 id="app_humedad"></h1>
                                     </div>
                                 </div>
-                                <canvas id="coin_sales1" height="100"></canvas>
+                                <canvas id="coin_sales1" height="50"></canvas>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="single-report mb-xs-30">
                                 <div class="s-report-inner pr--20 pt--30 mb-3">
-                                    <div class="icon"><i class="fa fa-btc"></i></div>
-                                    <div class="s-report-title d-flex justify-content-between">
+                                    <div class="icon"><i class="fa fa-tachometer"></i></div>
+                                    <div class="s-report-title d-flex align-items-center">
                                         <h4 class="header-title mb-0">TEMPERATURA</h4>
                                     </div>
                                     <div class="d-flex justify-content-between pb-2">
-                                        <h2 id="app_temperatura"></h2>
+                                        <h1 id="app_temperatura"></h1>
                                     </div>
                                 </div>
-                                <canvas id="coin_sales2" height="100"></canvas>
+                                <canvas id="coin_sales2" height="50"></canvas>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="single-report">
                                 <div class="s-report-inner pr--20 pt--30 mb-3">
-                                    <div class="icon"><i class="fa fa-eur"></i></div>
-                                    <div class="s-report-title d-flex justify-content-between">
-                                        <h4 class="header-title mb-0">Euthorium</h4>
-                                        <p>24 H</p>
+                                    <div class="icon"><i class="fa fa-user"></i></div>
+                                    <div class="s-report-title d-flex align-items-center">
+                                        <h4 class="header-title mb-0">MOVIMIENTO</h4>
                                     </div>
                                     <div class="d-flex justify-content-between pb-2">
-                                        <h2>$ 4567809,987</h2>
-                                        <span>- 45.87</span>
+                                        <h3 id="app_movimiento"></h3>
                                     </div>
                                 </div>
-                                <canvas id="coin_sales3" height="100"></canvas>
+                                <canvas id="coin_sales3" height="50"></canvas>
                             </div>
                         </div>
                     </div>
@@ -151,7 +155,7 @@
         <!-- footer area start-->
         <footer>
             <div class="footer-area">
-                <p>© Copyright 2024.<a href=""></a>.</p>
+                <p>© Copyright 2024.<a href=""></a></p>
             </div>
         </footer>
         <!-- footer area end-->
@@ -203,6 +207,7 @@
         const db = getDatabase(app);
     
         const messageRef = ref(db, 'sensores/DHT11');
+        const messageRefMov = ref(db, 'sensores/movimiento');
     
         // Retrieve all children of the messageRef node
         setInterval(() => {
@@ -211,24 +216,54 @@
                 var app_humedad = document.getElementById('app_humedad');
                 var app_temperatura = document.getElementById('app_temperatura');
                 if (snapshot.exists()) {
-                const children = snapshot.val();
-                // Get the keys of all children
-                const keys = Object.keys(children);
-                // Get the last key
-                const lastKey = keys[keys.length - 1];
-                // Get the value of the last child
-                const lastChild = children[lastKey];
-                // Convert the object to a string
-                const lastChildText = JSON.stringify(lastChild);
-                // Asigna el mensaje al elemento HTML
-                const objeto = JSON.parse(lastChildText);
-                const humedad = objeto['humedad'];
-                const temperatura = objeto['temperatura'];
-                app_humedad.innerText = JSON.stringify(humedad);
-                app_temperatura.innerText = JSON.stringify(temperatura);
-                // Attach a listener to automatically update on value changes
+                    const children = snapshot.val();
+                    // Get the keys of all children
+                    const keys = Object.keys(children);
+                    // Get the last key
+                    const lastKey = keys[keys.length - 1];
+                    // Get the value of the last child
+                    const lastChild = children[lastKey];
+                    // Convert the object to a string
+                    const lastChildText = JSON.stringify(lastChild);
+                    // Asigna el mensaje al elemento HTML
+                    const objeto = JSON.parse(lastChildText);
+                    const humedad = objeto['humedad'];
+                    const temperatura = objeto['temperatura'];
+                    const newhumedad = JSON.stringify(humedad);
+                    const newtemperatura = JSON.stringify(temperatura);
+                    app_humedad.innerText = newhumedad.replace(/"/g, "") + " %";
+                    app_temperatura.innerText = newtemperatura.replace(/"/g, "") + " °C";
+                    // Attach a listener to automatically update on value changes
                 } else {
-                console.log("El nodo 'sensores/DHT11' no tiene hijos en la base de datos");
+                    console.log("El nodo 'sensores/DHT11' no tiene hijos en la base de datos");
+                }
+            })
+            .catch((error) => {
+                console.error("Error al leer el mensaje:", error);
+            });
+        }, 5000);
+        setInterval(() => {
+            get(messageRefMov)
+            .then((snapshot) => {
+                var app_movimiento = document.getElementById('app_movimiento');
+                if (snapshot.exists()) {
+                    const children = snapshot.val();
+                    // Get the keys of all children
+                    const keys = Object.keys(children);
+                    // Get the last key
+                    const lastKey = keys[keys.length - 1];
+                    // Get the value of the last child
+                    const lastChild = children[lastKey];
+                    // Convert the object to a string
+                    const lastChildText = JSON.stringify(lastChild);
+                    // Asigna el mensaje al elemento HTML
+                    const objeto = JSON.parse(lastChildText);
+                    const movimiento = objeto['deteccion'];
+                    const newmovimiento = JSON.stringify(movimiento);
+                    app_movimiento.innerText = newmovimiento.replace(/"/g, "");
+                    // Attach a listener to automatically update on value changes
+                } else {
+                    console.log("El nodo 'sensores/movimiento' no tiene hijos en la base de datos");
                 }
             })
             .catch((error) => {
