@@ -94,20 +94,33 @@
 <body>
     <div class="container">
         <h1>Inicio de sesión</h1>
-        <form>
-            <label for="email">Email ID</label>
-            <input type="text" id="email" name="email" required>
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" required>
+        <form name=form action="index.html" id="formulario" method="post">
+            <label for="text">Usuario</label>
+            <input type="text" name="usuario" required>
+            <label for="text">Contraseña</label>
+            <input type="password" name="password" required>
             <div class="remember-me">
                 <input type="checkbox" id="remember-me-checkbox" name="remember-me">
                 <label for="remember-me-checkbox">Recuérdame</label>
             </div>
-            <center><button type="submit" onclick="location.href='index.html'">LOGIN</button></center>
+            <center><button onclick="iniciarSesion()">LOGIN</button></center>
         </form>
         <div class="links">
             <a href="#">¿Olvidó su contraseña?</a>
         </div>
     </div>
+    <script>
+        function iniciarSesion() {
+            if ((document.form.password.value=='vebl123' && document.form.login.value=='vbriceno19') || (document.form.password.value=='mdbp123' && document.form.login.value=='mbustamante19')){ 
+                document.form.submit();
+            } 
+            else{ 
+                window.alert('Usuario o contraseña incorrectos, por favor intentelo de nuevo');
+                document.getElementById('formulario').reset();
+            } 
+
+            
+        }
+    </script>
 </body>
 </html>

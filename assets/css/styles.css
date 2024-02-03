@@ -658,8 +658,8 @@
 
 .page-title {
     font-size: 24px;
-    font-weight: 300;
-    color: #313b3d;
+    font-weight: 600;
+    color: #ffffff;
     letter-spacing: 0;
     margin-right: 30px;
 }
@@ -713,6 +713,10 @@ ul.breadcrumbs {
     position: relative;
 }
 
+.colorbarra {
+    background: -webkit-linear-gradient(left, #a14ef5 0%, #8063f5 100%);
+    background: linear-gradient(to right, #a14ef5 0%, #8063f5 100%);
+}
 .user-profile img.avatar {
     height: 35px;
     width: 35px;
