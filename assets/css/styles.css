@@ -906,6 +906,17 @@ ul.breadcrumbs {
 
 #verview-shart {
     height: 400px;
+    width: 100%;
+}
+
+#verview-shart-t {
+    height: 400px;
+    width: 100%;
+}
+
+#verview-shart-t-license-text,
+#coin_distribution-license-text {
+    display: none;
 }
 
 #verview-shart-license-text,
