@@ -29,6 +29,19 @@
             background-image: url("assets/images/fonts/fondo3.jpg");
             justify-content: center;
         }
+        .map-container {
+            position: relative;
+            padding-bottom: 100%; 
+            height: 0;
+            overflow: hidden;
+        }
+        .map-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 
@@ -120,7 +133,7 @@
                 <!-- sales report area end -->
                 <!-- overview area start -->
                 <div class="row">
-                    <div class="col-xl-9 col-lg-8">
+                    <div class="col-xl-8 col-lg-8">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -137,10 +150,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-3 col-lg-4 coin-distribution">
+                    <div class="col-xl-4 col-lg-4 coin-distribution">
                         <div class="card h-full">
                             <div class="card-body">
-                                <h4 class="header-title mb-0">Algo va aquí</h4>
+                                <h4 class="header-title mb-0">Mapa</h4>
+                                <hr>
+                                <div class="map-container"><iframe src="https://www.google.com/maps/embed?pb=!1m34!1m12!1m3!1d2011157.5128278823!2d-67.38206984809415!3d10.09564315289955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m19!3e2!4m5!1s0x8c2d740d55b939f1%3A0x6a6baaf6f31a1448!2sPuerto%20La%20Cruz%2C%20Anzo%C3%A1tegui!3m2!1d10.2007985!2d-64.6334643!4m5!1s0x8c2aaa20760411b1%3A0x80d974a28823a010!2sSan%20Juan%20de%20Los%20Morros!3m2!1d9.9126704!2d-67.36145859999999!4m5!1s0x8c2a5ff496279f45%3A0xce0fc9843f5ba7f6!2sCaracas%2C%20Distrito%20Capital!3m2!1d10.4647119!2d-66.9765068!5e0!3m2!1ses!2sve!4v1708141076970!5m2!1ses!2sve" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
                                 <!-- <div id="coin_distribution"></div>-->
                             </div>
                         </div>
