@@ -42,6 +42,25 @@
             width: 100%;
             height: 100%;
         }
+        .progress-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 20px;
+    background-color: #ebe2e2;
+  }
+
+  .progress {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .progress-value {
+    margin-left: 10px;
+  }
     </style>
 </head>
 
@@ -153,10 +172,19 @@
                     <div class="col-xl-4 col-lg-4 coin-distribution">
                         <div class="card h-full">
                             <div class="card-body">
-                                <h4 class="header-title mb-0">Mapa</h4>
+                                <h4 class="header-title mb-0">Mapa de enlaces</h4>
                                 <hr>
                                 <div class="map-container"><iframe src="https://www.google.com/maps/embed?pb=!1m34!1m12!1m3!1d2011157.5128278823!2d-67.38206984809415!3d10.09564315289955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m19!3e2!4m5!1s0x8c2d740d55b939f1%3A0x6a6baaf6f31a1448!2sPuerto%20La%20Cruz%2C%20Anzo%C3%A1tegui!3m2!1d10.2007985!2d-64.6334643!4m5!1s0x8c2aaa20760411b1%3A0x80d974a28823a010!2sSan%20Juan%20de%20Los%20Morros!3m2!1d9.9126704!2d-67.36145859999999!4m5!1s0x8c2a5ff496279f45%3A0xce0fc9843f5ba7f6!2sCaracas%2C%20Distrito%20Capital!3m2!1d10.4647119!2d-66.9765068!5e0!3m2!1ses!2sve!4v1708141076970!5m2!1ses!2sve" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-                                <!-- <div id="coin_distribution"></div>-->
+                                <hr>
+                                <h4 class="header-title mb-0">Calidad de enlaces</h4>
+                                <hr>
+                                <label>Enlace-Sensor H y T</label> 
+                                <div class="progress-container">
+                                    <div class="progress-bar">
+                                      <div class="progress" id="progress"></div>
+                                    </div>
+                                    <div class="progress-value" id="progressValue"></div>
+                                  </div>
                             </div>
                         </div>
                     </div>
@@ -196,6 +224,31 @@
             var tiempo = horas.toString().padStart(2, '0') + ':' + minutos.toString().padStart(2, '0');
             return tiempo;
         }
+
+        // Update the progress bar based on the value
+        function updateProgressBar(value, value2) {
+            const progress = document.getElementById('progress');
+            const progressValue = document.getElementById('progressValue');
+            const progressWidth = (130 - value) / 130 * 100;
+            progress.style.width = progressWidth + '%';
+
+            if (value >= 0 && value <= 42) {
+                progress.style.backgroundColor = '#53F555';
+            } else if (value > 42 && value <= 86) {
+                progress.style.backgroundColor = '#239E25';
+            } else if (value > 86 && value <= 95) {
+                progress.style.backgroundColor = '#9B9E23';
+            } else if (value > 95 && value <= 107) {
+                progress.style.backgroundColor = '#9E8423';
+            } else if (value > 107 && value <= 118) {
+                progress.style.backgroundColor = '#9E4123';
+            } else if (value > 118 && value <= 129) {
+                progress.style.backgroundColor = '#FF0000';
+            }
+
+            progressValue.textContent = value2;
+        }
+
         const humedadelements = [];
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
@@ -239,7 +292,7 @@
                 const values = Object.values(humedadValues);
                 const humedadelements = values.slice(0, 10);
             } else {
-                console.log("No data available");
+                //console.log("No data available");
             }
         }).catch((error) => {
         console.error("Error getting data:", error);
@@ -253,6 +306,7 @@
                 var tiempo_actualizacion = document.getElementById('tiempo_actualizacion');
                 tiempo_actualizacion.style.color = "white";
                 tiempo_actualizacion.style.textAlign = "left";
+                
                 if (snapshot.exists()) {
                     const children = snapshot.val();
                     const keys = Object.keys(children);
@@ -262,7 +316,13 @@
                     const objeto = JSON.parse(lastChildText);
                     const humedad = objeto['humedad'];
                     const temperatura = objeto['temperatura'];
-
+                    const potencia = objeto['potencia_rx'];
+                    const newpotencia = JSON.stringify(potencia);
+                    var value = newpotencia.replace(/"/g, ""); 
+                    var value2 = parseInt(value);
+                    value = value.replace(/-/g, "");
+                    console.log("VALUEEE", parseInt(value));
+                    updateProgressBar(parseInt(value),value2);
                     const time = objeto['tiempo'];
                     var valores = time.match(/\((.*?)\)/)[1];
                     var lista = valores.split(", ");
@@ -274,7 +334,7 @@
                     var fecha = new Date(año, mes - 1, dia, hora, minuto); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
                     var formatoFecha = fecha.toLocaleDateString();
                     var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
-                    console.log("time", formatoFecha); // Imprime la fecha formateada
+                    //console.log("time", formatoFecha); // Imprime la fecha formateada
 
                     const newhumedad = JSON.stringify(humedad);
                     const newtemperatura = JSON.stringify(temperatura);
@@ -283,7 +343,7 @@
                     app_temperatura.innerText = newtemperatura.replace(/"/g, "") + " °C";
                     tiempo_actualizacion.innerText = newtiempo.replace(/"/g, "");
                 } else {
-                    console.log("El nodo 'sensores/DHT11' no tiene hijos en la base de datos");
+                    //console.log("El nodo 'sensores/DHT11' no tiene hijos en la base de datos");
                 }
             })
             .catch((error) => {
@@ -311,9 +371,9 @@
                     for (const key in objetoListaMov) {
                         if (objetoListaMov.hasOwnProperty(key)) {
                             const mov = objetoListaMov[key].deteccion;
-                            console.log("no entro", mov);
+                            //console.log("no entro", mov);
                             if(mov == "Movimiento detectado"){
-                                console.log("entro", mov);
+                                //console.log("entro", mov);
                                 contador++;
                             }
                             elementosMovimientos.push(mov);
@@ -332,9 +392,9 @@
                             break;
                         }
                     }
-                    console.log("tiempo", tiempoValues);
-                    console.log("movimientos", elementosMovimientos);
-                    console.log("ultimo valor", tiempoValues[ultimaposicion]);
+                    //console.log("tiempo", tiempoValues);
+                    //console.log("movimientos", elementosMovimientos);
+                    //console.log("ultimo valor", tiempoValues[ultimaposicion]);
                     var valores_mov = tiempoValues[ultimaposicion].match(/\((.*?)\)/)[1];
                     var lista_mov = valores_mov.split(", ");
                     var año_mov = parseInt(lista_mov[0]);
@@ -345,7 +405,7 @@
                     var fecha_mov = new Date(año_mov, mes_mov - 1, dia_mov, hora_mov, minuto_mov); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
                     var formatoFecha_mov = fecha_mov.toLocaleDateString();
                     var formatoHora_mov = fecha_mov.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
-                    console.log("time_movimiento", formatoFecha_mov, formatoHora_mov); // Imprime la fecha formateada
+                    //console.log("time_movimiento", formatoFecha_mov, formatoHora_mov); // Imprime la fecha formateada
                     const keys = Object.keys(children);
                     const lastKey = keys[keys.length - 1];
                     const lastChild = children[lastKey];
@@ -365,7 +425,7 @@
                     var fecha = new Date(año, mes - 1, dia, hora, minuto); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
                     var formatoFecha = fecha.toLocaleDateString();
                     var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
-                    console.log("time", formatoFecha); // Imprime la fecha formateada
+                    //console.log("time", formatoFecha); // Imprime la fecha formateada
 
                     const newtiempo = "Última actualización de M. : " + JSON.stringify(formatoFecha) + " " + JSON.stringify(formatoHora);
 
@@ -374,7 +434,7 @@
                     app_movimiento.innerText = newmovimiento.replace(/"/g, "");
                     date_last_mov.innerText = "Últ. movimiento detectado: "+JSON.stringify(formatoFecha_mov).replace(/"/g, "") + " " + JSON.stringify(formatoHora_mov).replace(/"/g, "");
                 } else {
-                    console.log("El nodo 'sensores/movimiento' no tiene hijos en la base de datos");
+                    //console.log("El nodo 'sensores/movimiento' no tiene hijos en la base de datos");
                 }
             })
             .catch((error) => {
@@ -414,13 +474,13 @@
                             year = fecha.getFullYear();
                             dia = fecha.getDate() + 1;
                             mes = fecha.getMonth() + 1;
-                            console.log("Día: ", dia);
-                            console.log("Mes: ", mes);
-                            console.log("Año: ", year);
+                            //console.log("Día: ", dia);
+                            //console.log("Mes: ", mes);
+                            //console.log("Año: ", year);
                         });
 
-                        console.log("fecha", valorFecha); 
-                        console.log("children", children)
+                        //console.log("fecha", valorFecha); 
+                        //console.log("children", children)
                         const lastChildText = JSON.stringify(children);
                         const obj = JSON.parse(lastChildText);
                         const humedadValues = [];
@@ -439,7 +499,7 @@
                             }
                         }
 
-                        console.log("tiempo", tiempoValues);
+                        //console.log("tiempo", tiempoValues);
                         const valuest = Object.values(tiempoValues);
                         const posiciones = [];
 
@@ -457,12 +517,12 @@
                             }
                         }
 
-                        console.log("posiciones", posiciones);
+                        //console.log("posiciones", posiciones);
                         const elementost = valuest.slice(-10);
-                        console.log("tiempo", elementost);
+                        //console.log("tiempo", elementost);
                         const values = Object.values(humedadValues);
                         const elementos = values.slice(-10);
-                        console.log("humedad", elementos);
+                        //console.log("humedad", elementos);
                         const listaDeEnteros = elementos.map(str => parseInt(str));
                         const listaHoras = [];
                         const listaMin = [];
@@ -474,8 +534,8 @@
                         const listaHorasNew = listaHoras.map(str => parseInt(str));
                         const listaMinNew = listaMin.map(str => parseInt(str));
                         const puntos = [];
-                        console.log("Fechas:", listaHorasNew);
-                        console.log("Rangos:", humedadValues);
+                        //console.log("Fechas:", listaHorasNew);
+                        //console.log("Rangos:", humedadValues);
                         var ejeHumedad = []; 
                         for (var i = 0; i < posiciones.length; i++) {
                             ejeHumedad.push(parseInt(humedadValues[posiciones[i]]));
@@ -485,21 +545,21 @@
 
                             var valorEnEscalaLarge = ((minutosTotales - minimoMinutos) / (maximoMinutos - minimoMinutos));
                             var valorEnEscala = Math.round(valorEnEscalaLarge * 100) / 100;
-                            console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
+                            //console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
                             const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(humedadValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
-                            console.log("cada punto", punto);
+                            //console.log("cada punto", punto);
                             puntos.push(punto); // Agregar el punto a la lista de puntos
                         }
-                        console.log("puntos", puntos); // Imprimir los puntos resultantes
+                        //console.log("puntos", puntos); // Imprimir los puntos resultantes
                         var minimo = Math.min(...ejeHumedad) - 1;
                         var maximo = Math.max(...ejeHumedad) + 1;
-                        console.log("max", maximo);
-                        console.log("min", minimo);
+                        //console.log("max", maximo);
+                        //console.log("min", minimo);
 
                         function formatTime(value) {
                             var hours = Math.floor(value);
                             var minutes = Math.floor((value - hours) * 60);
-                            console.log("minutos", value, minutes);
+                            //console.log("minutos", value, minutes);
                             return value*60;
                         }
 
@@ -559,7 +619,7 @@
                             width: "100%"
                             });
                         } else {
-                            console.log("No data available");
+                            //console.log("No data available");
                         }
                 }).catch((error) => {
                     console.error("Error getting data:", error);
@@ -608,13 +668,13 @@
                            year = fecha.getFullYear();
                            dia = fecha.getDate() + 1;
                            mes = fecha.getMonth() + 1;
-                           console.log("Día: ", dia);
-                           console.log("Mes: ", mes);
-                           console.log("Año: ", year);
+                           //console.log("Día: ", dia);
+                           //console.log("Mes: ", mes);
+                           //console.log("Año: ", year);
                        });
 
-                       console.log("fecha", valorFecha); 
-                       console.log("children", children)
+                       //console.log("fecha", valorFecha); 
+                       //console.log("children", children)
                        const lastChildText = JSON.stringify(children);
                        const obj = JSON.parse(lastChildText);
                        const temperaturaValues = [];
@@ -633,7 +693,7 @@
                            }
                        }
 
-                       console.log("tiempo", tiempoValues);
+                       //console.log("tiempo", tiempoValues);
                        const valuest = Object.values(tiempoValues);
                        const posiciones = [];
 
@@ -651,12 +711,12 @@
                            }
                        }
 
-                       console.log("posiciones", posiciones);
+                       //console.log("posiciones", posiciones);
                        const elementost = valuest.slice(-10);
-                       console.log("tiempo", elementost);
+                       //console.log("tiempo", elementost);
                        const values = Object.values(temperaturaValues);
                        const elementos = values.slice(-10);
-                       console.log("temperatura", elementos);
+                       //console.log("temperatura", elementos);
                        const listaDeEnteros = elementos.map(str => parseInt(str));
                        const listaHoras = [];
                        const listaMin = [];
@@ -668,8 +728,8 @@
                        const listaHorasNew = listaHoras.map(str => parseInt(str));
                        const listaMinNew = listaMin.map(str => parseInt(str));
                        const puntos = [];
-                       console.log("Fechas:", listaHorasNew);
-                       console.log("Rangos:", temperaturaValues);
+                       //console.log("Fechas:", listaHorasNew);
+                       //console.log("Rangos:", temperaturaValues);
                        var ejeTemperatura = []; 
                        for (var i = 0; i < posiciones.length; i++) {
                            ejeTemperatura.push(parseInt(temperaturaValues[posiciones[i]]));
@@ -680,21 +740,21 @@
                            // Calcular el valor en la escala
                            var valorEnEscalaLarge = ((minutosTotales - minimoMinutos) / (maximoMinutos - minimoMinutos));
                            var valorEnEscala = Math.round(valorEnEscalaLarge * 100) / 100;
-                           console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
+                           //console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
                            const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(temperaturaValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
-                           console.log("cada punto", punto);
+                           //console.log("cada punto", punto);
                            puntos.push(punto); // Agregar el punto a la lista de puntos
                        }
-                       console.log("puntos", puntos); // Imprimir los puntos resultantes
+                       //console.log("puntos", puntos); // Imprimir los puntos resultantes
                        var minimo = Math.min(...ejeTemperatura) - 1;
                        var maximo = Math.max(...ejeTemperatura) + 1;
-                       console.log("max", maximo);
-                       console.log("min", minimo);
+                       //console.log("max", maximo);
+                       //console.log("min", minimo);
 
                        function formatTime(value) {
                            var hours = Math.floor(value);
                            var minutes = Math.floor((value - hours) * 60);
-                           console.log("minutos", value, minutes);
+                           //console.log("minutos", value, minutes);
                            return value*60;
                        }
 
@@ -755,7 +815,7 @@
                            width: "100%"
                            });
                        } else {
-                           console.log("No data available");
+                           //console.log("No data available");
                        }
                }).catch((error) => {
                    console.error("Error getting data:", error);
