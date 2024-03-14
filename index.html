@@ -184,7 +184,14 @@
                                       <div class="progress" id="progress"></div>
                                     </div>
                                     <div class="progress-value" id="progressValue"></div>
-                                  </div>
+                                </div>
+                                <label>Enlace-Sensor M</label> 
+                                <div class="progress-container">
+                                    <div class="progress-bar">
+                                      <div class="progress" id="progressM"></div>
+                                    </div>
+                                    <div class="progress-value" id="progressValueM"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -226,9 +233,9 @@
         }
 
         // Update the progress bar based on the value
-        function updateProgressBar(value, value2) {
-            const progress = document.getElementById('progress');
-            const progressValue = document.getElementById('progressValue');
+        function updateProgressBar(value, value2, nameProgress, nameProgressValue) {
+            const progress = document.getElementById(nameProgress);
+            const progressValue = document.getElementById(nameProgressValue);
             const progressWidth = (130 - value) / 130 * 100;
             progress.style.width = progressWidth + '%';
 
@@ -322,7 +329,7 @@
                     var value2 = parseInt(value);
                     value = value.replace(/-/g, "");
                     console.log("VALUEEE", parseInt(value));
-                    updateProgressBar(parseInt(value),value2);
+                    updateProgressBar(parseInt(value),value2, "progress", "progressValue");
                     const time = objeto['tiempo'];
                     var valores = time.match(/\((.*?)\)/)[1];
                     var lista = valores.split(", ");
@@ -338,6 +345,7 @@
 
                     const newhumedad = JSON.stringify(humedad);
                     const newtemperatura = JSON.stringify(temperatura);
+                    console.log("newhumedad",newhumedad);
                     const newtiempo = "Última actualización de H. y T. : " + JSON.stringify(formatoFecha) + " " + JSON.stringify(formatoHora);
                     app_humedad.innerText = newhumedad.replace(/"/g, "") + " %";
                     app_temperatura.innerText = newtemperatura.replace(/"/g, "") + " °C";
@@ -413,8 +421,14 @@
                     const objeto = JSON.parse(lastChildText);
                     const movimiento = objeto['deteccion'];
                     const time = objeto['tiempo'];
+                    const potencia = objeto['potencia_rx'];
+                    const newpotencia = JSON.stringify(potencia);
+                    var value = newpotencia.replace(/"/g, ""); 
+                    var value2 = parseInt(value);
+                    value = value.replace(/-/g, "");
+                    console.log("VALUEEE", parseInt(value));
+                    updateProgressBar(parseInt(value),value2, "progressM", "progressValueM");
                     const newmovimiento = JSON.stringify(movimiento);
-
                     var valores = time.match(/\((.*?)\)/)[1];
                     var lista = valores.split(", ");
                     var año = parseInt(lista[0]);
@@ -550,16 +564,16 @@
                             //console.log("cada punto", punto);
                             puntos.push(punto); // Agregar el punto a la lista de puntos
                         }
-                        //console.log("puntos", puntos); // Imprimir los puntos resultantes
+                        console.log("puntos", puntos); // Imprimir los puntos resultantes
                         var minimo = Math.min(...ejeHumedad) - 1;
                         var maximo = Math.max(...ejeHumedad) + 1;
-                        //console.log("max", maximo);
-                        //console.log("min", minimo);
+                        console.log("max", maximo);
+                        console.log("min", minimo);
 
                         function formatTime(value) {
                             var hours = Math.floor(value);
                             var minutes = Math.floor((value - hours) * 60);
-                            //console.log("minutos", value, minutes);
+                            console.log("minutos", value, minutes);
                             return value*60;
                         }
 
@@ -598,7 +612,7 @@
                                 "aspect": "spline",
                                 "tooltip": {
                                     "visible": true,
-                                    "text": "Tiempo (h): %kt <br> Temperatura: %v" // use function to format y value
+                                    "text": "Tiempo (h): %kt <br> Humedad: %v" // use function to format y value
                                 }
                             },
                             "series": [{
