@@ -230,6 +230,12 @@
     #verview-shart-t-wrapper {
         margin-top: -26px;
     }
+    #verview-shart-hs-wrapper {
+        margin-top: -26px;
+    }
+    #verview-shart-luz-wrapper {
+        margin-top: -14px;
+    }
     .cripto-live ul li .icon {
         height: 23px;
         width: 23px;
@@ -637,6 +643,16 @@
     }
     #verview-shart-t {
         height: 235px;
+        width: 100%;
+    }
+    #verview-shart-hs {
+        height: 235px;
+        width: 100%;
+    }
+    #verview-shart-luz {
+        margin-top: 50px;
+        text-align: center;
+        height: 60px;
         width: 100%;
     }
     #coin_distribution-wrapper {

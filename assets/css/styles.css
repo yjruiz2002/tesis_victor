@@ -914,6 +914,28 @@ ul.breadcrumbs {
     width: 100%;
 }
 
+#verview-shart-hs {
+    height: 400px;
+    width: 100%;
+}
+
+#verview-shart-luz {
+    text-align: center;
+    margin-top: 50px;
+    height: 100px;
+    width: 100%;
+}
+
+#verview-shart-luz-license-text,
+#coin_distribution-license-text {
+    display: none;
+}
+
+#verview-shart-hs-license-text,
+#coin_distribution-license-text {
+    display: none;
+}
+
 #verview-shart-t-license-text,
 #coin_distribution-license-text {
     display: none;
