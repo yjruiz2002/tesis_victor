@@ -210,8 +210,9 @@
                                 <div id="verview-shart" style="display: block;"></div>
                                 <div id="verview-shart-t" style="display: none;"></div>
                                 <div id="verview-shart-hs" style="display: none;"></div>
-                                
-                                <h4 class="header-title mb-0"><div id="verview-shart-luz" style="display: none;"></div></h4>
+                                <h4 class="header-title mb-0"><div id="verview-shart-luz" style="display: none;">
+                                    <img id="mi-imagen" src="assets/images/fonts/sol.jpg" alt="Descripción de la imagen">
+                                </div></h4>
                                 <hr>
                                 <div class="d-flex justify-content-center align-items-center">
                                     <h4 class="header-title mb-0">Mensajes de enlace</h4>
@@ -249,7 +250,9 @@
                                     </div>
                                     <div class="progress-value" id="progressValue"></div>
                                 </div>
-                                <label>Enlace-Sensor M</label> 
+                                <label class="iconoTiempo">Enlace-Sensor S y L</label> 
+                                <i class="fa fa-clock-o iconoTiempoNuevo"></i>
+                                <label class="miLabel" id="tiempo_calidad_M"></label>
                                 <div class="progress-container">
                                     <div class="progress-bar">
                                         <div class="progress" id="progressM"></div>
@@ -351,6 +354,8 @@
     
         const messageRef = ref(db, 'sensores/DHT11');
         const messageRefLuz = ref(db, 'sensores/Luz');
+        const messageAcuse1 = ref(db, 'sensores/ACUSES1');
+        const messageAcuse2 = ref(db, 'sensores/ACUSES2');
         
         get(messageRef).then((snapshot) => {
             if (snapshot.exists()) {
@@ -370,8 +375,87 @@
                 //console.log("No data available");
             }
         }).catch((error) => {
+            console.error("Error getting data:", error);
+        });
+
+        get(messageAcuse1).then((snapshot) => {
+            if (snapshot.exists()) {
+                const children = snapshot.val();
+                const keys = Object.keys(children);
+                const lastKey = keys[keys.length - 1];
+                const lastChild = children[lastKey];
+                const lastChildText = JSON.stringify(lastChild);
+                const objeto = JSON.parse(lastChildText);
+                const potencia_rx = objeto['potencia_rx'];
+                const newpotencia = JSON.stringify(potencia_rx);
+                const tiempo = objeto['tiempo'];
+                console.log("newpotencia", potencia_rx, tiempo);
+                //console.log("time", time); // Imprime la fecha formateada
+                
+                var valores = tiempo.match(/\((.*?)\)/)[1];
+                var lista = valores.split(", ");
+                console.log("time", lista); // Imprime la fecha formateada
+                var año = parseInt(lista[0]);
+                var mes = parseInt(lista[1]);
+                var dia = parseInt(lista[2]);
+                var hora = parseInt(lista[3]);
+                var minuto = parseInt(lista[4]);
+                var fecha = new Date(año, mes - 1, dia, hora, minuto); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
+                var formatoFecha = fecha.toLocaleDateString();
+                var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
+                //console.log("time", formatoFecha); // Imprime la fecha formateada
+                var value = newpotencia.replace(/"/g, ""); 
+                var value2 = parseInt(value);
+                value = value.replace(/-/g, "");
+                //console.log("VALUEEE", parseInt(value));
+                updateProgressBar(parseInt(value),value2, "progress", "progressValue", "tiempo_calidad_H", JSON.stringify(formatoFecha), JSON.stringify(formatoHora));
+                    
+            } else {
+                //console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error("Error getting data:", error);
+        });
+
+        get(messageAcuse2).then((snapshot) => {
+            if (snapshot.exists()) {
+                const children = snapshot.val();
+                const keys = Object.keys(children);
+                const lastKey = keys[keys.length - 1];
+                const lastChild = children[lastKey];
+                const lastChildText = JSON.stringify(lastChild);
+                const objeto = JSON.parse(lastChildText);
+                const potencia_rx = objeto['potencia_rx'];
+                const newpotencia = JSON.stringify(potencia_rx);
+                const tiempo = objeto['tiempo'];
+                console.log("newpotencia", potencia_rx, tiempo);
+                //console.log("time", time); // Imprime la fecha formateada
+                
+                var valores = tiempo.match(/\((.*?)\)/)[1];
+                var lista = valores.split(", ");
+                console.log("time", lista); // Imprime la fecha formateada
+                var año = parseInt(lista[0]);
+                var mes = parseInt(lista[1]);
+                var dia = parseInt(lista[2]);
+                var hora = parseInt(lista[3]);
+                var minuto = parseInt(lista[4]);
+                var fecha = new Date(año, mes - 1, dia, hora, minuto); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
+                var formatoFecha = fecha.toLocaleDateString();
+                var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
+                //console.log("time", formatoFecha); // Imprime la fecha formateada
+                var value = newpotencia.replace(/"/g, ""); 
+                var value2 = parseInt(value);
+                value = value.replace(/-/g, "");
+                //console.log("VALUEEE", parseInt(value));
+                updateProgressBar(parseInt(value),value2, "progressM", "progressValueM", "tiempo_calidad_M", JSON.stringify(formatoFecha), JSON.stringify(formatoHora));
+                    
+            } else {
+                //console.log("No data available");
+            }
+        }).catch((error) => {
         console.error("Error getting data:", error);
         });
+
         // Retrieve all children of the messageRef node
         setInterval(() => {
             get(messageRef)
@@ -397,8 +481,6 @@
                     const newtemperatura = JSON.stringify(temperatura);
                     //console.log("newtemperatura", newtemperatura);
                     app_temperatura.innerText = newtemperatura.replace(/"/g, "") + " °C";
-                    const potencia = objeto['potencia_rx'];
-                    const newpotencia = JSON.stringify(potencia);
                     const time = objeto['tiempo'];
                     //console.log("time", time); // Imprime la fecha formateada
                     
@@ -413,16 +495,11 @@
                     var fecha = new Date(año, mes - 1, dia, hora, minuto); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
                     var formatoFecha = fecha.toLocaleDateString();
                     var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
-                    //console.log("time", formatoFecha); // Imprime la fecha formateada
-                    var value = newpotencia.replace(/"/g, ""); 
-                    var value2 = parseInt(value);
-                    value = value.replace(/-/g, "");
                     //console.log("VALUEEE", parseInt(value));
-                    updateProgressBar(parseInt(value),value2, "progress", "progressValue", "tiempo_calidad_H", JSON.stringify(formatoFecha), JSON.stringify(formatoHora));
                     
                    
                     
-                    const newtiempo = "Última actualización de H. y T. : " + JSON.stringify(formatoFecha) + " " + JSON.stringify(formatoHora);
+                    const newtiempo = "Últ. act. de H. y T. : " + JSON.stringify(formatoFecha) + " " + JSON.stringify(formatoHora);
                     
                     tiempo_actualizacion.innerText = newtiempo.replace(/"/g, "");
                 } else {
@@ -437,6 +514,7 @@
             get(messageRefLuz)
             .then((snapshot) => {
                 var app_luz = document.getElementById('app_luz');
+                var tiempo_actualizacion_luz = document.getElementById('tiempo_actualizacion_luz');
                 const now = new Date();
                 var contadorLuz = 0;
                 //console.log("pasee" + now);
@@ -487,6 +565,25 @@
                     const lastChildText = JSON.stringify(lastChild);
                     const objeto = JSON.parse(lastChildText);
                     const humedad = objeto['suelo'];
+                    const time = objeto['tiempo'];
+                    var valores = time.match(/\((.*?)\)/)[1];
+                    var lista = valores.split(", ");
+                    //console.log("time", lista); // Imprime la fecha formateada
+                    var año = parseInt(lista[0]);
+                    var mes = parseInt(lista[1]);
+                    var dia = parseInt(lista[2]);
+                    var hora = parseInt(lista[3]);
+                    var minuto = parseInt(lista[4]);
+                    var fecha = new Date(año, mes - 1, dia, hora, minuto); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
+                    var formatoFecha = fecha.toLocaleDateString();
+                    var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
+                    //console.log("VALUEEE", parseInt(value));
+                    
+                   
+                    
+                    const newtiempo = "Últ. act. de S. y L. : " + JSON.stringify(formatoFecha) + " " + JSON.stringify(formatoHora);
+                    
+                    tiempo_actualizacion_luz.innerText = newtiempo.replace(/"/g, "");
                     const newhumedad = JSON.stringify(humedad);
                     //console.log("newhumedad", newhumedad);
                     app_hum_suelo.innerText = newhumedad.replace(/"/g, "")+ " %";
@@ -1159,7 +1256,10 @@
                     console.error("Error getting data:", error);
                 });
             }, 5000);
-        
+                    // Obtener el elemento de la imagen por su ID
+            var imagen = document.getElementById('mi-imagen');
+            // Cambiar la ruta de la imagen
+            imagen.src = 'assets/images/fonts/sol.jpg';
         }
     </script>
     <script>
