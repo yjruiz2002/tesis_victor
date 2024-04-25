@@ -5,14 +5,14 @@
     <script>
         var url = window.location.href;
 
-// Verifica si hay parámetros en la URL
-if (url.indexOf('?') !== -1) {
-  // Elimina los parámetros y obtén la nueva URL
-  var newUrl = url.substring(0, url.indexOf('?'));
-  
-  // Redirige a la nueva URL sin los parámetros
-  window.location.href = newUrl;
-}
+        // Verifica si hay parámetros en la URL
+        if (url.indexOf('?') !== -1) {
+            // Elimina los parámetros y obtén la nueva URL
+            var newUrl = url.substring(0, url.indexOf('?'));
+            
+            // Redirige a la nueva URL sin los parámetros
+            window.location.href = newUrl;
+        }
     </script>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,7 +47,7 @@ if (url.indexOf('?') !== -1) {
             height: 0;
             overflow: hidden;
         }
-        .map-container iframe {
+        .map-container img {
             position: absolute;
             top: 0;
             left: 0;
@@ -223,7 +223,7 @@ if (url.indexOf('?') !== -1) {
                                 <div id="verview-shart-t" style="display: none;"></div>
                                 <div id="verview-shart-hs" style="display: none;"></div>
                                 <h4 class="header-title mb-0"><div id="verview-shart-luz" style="display: none;">
-                                    <img id="mi-imagen" src="assets/images/fonts/sol.jpg" alt="Descripción de la imagen">
+                                    <img id="mi-imagen" src="assets/images/fonts/sol.jpg" alt="sol">
                                 </div></h4>
                                 <hr>
                                 <div class="d-flex justify-content-center align-items-center">
@@ -269,7 +269,7 @@ if (url.indexOf('?') !== -1) {
                             <div class="card-body">
                                 <h4 class="header-title mb-0">Mapa de enlaces</h4>
                                 <hr>
-                                <div class="map-container"><iframe src="https://www.google.com/maps/embed?pb=!1m34!1m12!1m3!1d2011157.5128278823!2d-67.38206984809415!3d10.09564315289955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m19!3e2!4m5!1s0x8c2d740d55b939f1%3A0x6a6baaf6f31a1448!2sPuerto%20La%20Cruz%2C%20Anzo%C3%A1tegui!3m2!1d10.2007985!2d-64.6334643!4m5!1s0x8c2aaa20760411b1%3A0x80d974a28823a010!2sSan%20Juan%20de%20Los%20Morros!3m2!1d9.9126704!2d-67.36145859999999!4m5!1s0x8c2a5ff496279f45%3A0xce0fc9843f5ba7f6!2sCaracas%2C%20Distrito%20Capital!3m2!1d10.4647119!2d-66.9765068!5e0!3m2!1ses!2sve!4v1708141076970!5m2!1ses!2sve" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+                                <div class="map-container"><img src="assets/images/fonts/mapa_red.png" alt="mapa" ></div>
                                 <hr>
                                 <h4 class="header-title mb-0">Calidad de enlaces</h4>
                                 <hr>
