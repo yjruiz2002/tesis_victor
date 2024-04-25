@@ -200,7 +200,7 @@
                                     <select class="custome-select border-0 pr-3" onchange="toggleContent(this.value)">
                                         <option value="0" selected id="opc-humedad">Humedad</option>
                                         <option value="1" id="opc-temperatura">Temperatura</option>
-                                        <option value="2" id="opc-humedad-suelo">Humedad Suelo</option>
+                                         <option value="2" id="opc-humedad-suelo">Humedad Suelo</option>
                                         <option value="3" id="opc-luz">Luminosidad</option>
                                     </select>
                                 </div>
@@ -219,15 +219,35 @@
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h4 class="header-title mb-0">Temperatura</h4>
+                                    <h4 class="header-title mb-0">Temperatura <i id="color-temperatura" class="fa fa-circle" style="margin-left: 30px;"></i></h4>
+                                </div>
+                                <br>
+                                <div class="d-flex justify-content-between pb-2">
+                                    <h6 id="temperatura_valor"></h6>
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h4 class="header-title mb-0">Humedad</h4>
+                                    <h4 class="header-title mb-0">Humedad <i id="color-humedad" class="fa fa-circle" style="margin-left: 30px;"></i></h4>                                     
+                                </div>
+                                <br>
+                                <div class="d-flex justify-content-between pb-2">
+                                    <h6 id="humedad_valor"></h6>
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h4 class="header-title mb-0">Intensidad de luz</h4>
+                                    <h4 class="header-title mb-0">Intensidad de luz <i id="color-luz" class="fa fa-circle" style="margin-left: 30px;"></i></h4>
+                                </div>
+                                <br>
+                                <div class="d-flex justify-content-between pb-2">
+                                    <h6 id="luz_valor"></h6>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="header-title mb-0">Humedad del suelo <i id="color-humedad_suelo" class="fa fa-circle" style="margin-left: 30px;"></i></h4>
+                                </div>
+                                <br>
+                                <div class="d-flex justify-content-between pb-2">
+                                    <h6 id="humedad_suelo_valor"></h6>
                                 </div>
                             </div>
                         </div>
@@ -297,6 +317,94 @@
             var minutos = Math.round((valor - horas) * 60);
             var tiempo = horas.toString().padStart(2, '0') + ':' + minutos.toString().padStart(2, '0');
             return tiempo;
+        }
+
+        // Update the progress bar based on the value
+        function updateValorHumedad(value) {
+            console.log(value);
+            const valueNuevo = parseInt(value);
+            const humedadNuevo = document.getElementById('humedad_valor');
+            const iconoHTML = document.getElementById('color-humedad');
+            var mensaje = ""; 
+            if (value >= 0 && value <= 55) {
+                mensaje = "¡Atención! Condiciones de humedad ambiental insuficientes para el cultivo de caña de azúcar.";
+                iconoHTML.style.color = '#EE3200';
+            } else if (value >= 56 && value <= 75) {
+                mensaje = "Las condiciones de humedad ambiental son óptimas para el cultivo de caña de azúcar.";
+                iconoHTML.style.color = '#81F233';
+            } else if (value >= 76 && value <= 100)  {
+                mensaje = "¡Atención! Condiciones de humedad ambiental excesivas para el cultivo de caña de azúcar.";
+                iconoHTML.style.color = '#EE3200';
+            }
+            console.log(mensaje);
+            const mensajeNuevo = JSON.stringify(mensaje);
+            humedadNuevo.innerText = mensajeNuevo.replace(/"/g, "");
+        }
+
+        // Update the progress bar based on the value
+        function updateValorTemperatura(value) {
+            console.log(value);
+            const valueNuevo = parseInt(value);
+            const humedadNuevo = document.getElementById('temperatura_valor');
+            const iconoHTML = document.getElementById('color-temperatura');
+            var mensaje = ""; 
+            if (value >= 0 && value <= 23) {
+                mensaje = "¡Atención! Temperaturas insuficientes. Riesgo para cultivo. Esto puede retrasar o detener la maduración de la caña de azúcar!";
+                iconoHTML.style.color = '#EE3200';
+            } else if (value >= 24 && value <= 33) {
+                mensaje = "¡Excelente condición! Temperatura óptima para el cultivo.";
+                iconoHTML.style.color = '#81F233';
+            } else if (value >= 34 && value <= 100)  {
+                mensaje = "¡Atencion! Temperaturas excesivas. Riesgo para cultivo. Calor excesivo acelera la descomposición de los tallos!";
+                iconoHTML.style.color = '#EE3200';
+            }
+            console.log(mensaje);
+            const mensajeNuevo = JSON.stringify(mensaje);
+            humedadNuevo.innerText = mensajeNuevo.replace(/"/g, "");
+        }
+
+        // Update the progress bar based on the value
+        function updateValorHumedadSuelo(value) {
+            console.log(value);
+            const valueNuevo = parseInt(value);
+            const humedadNuevo = document.getElementById('humedad_suelo_valor');
+            const iconoHTML = document.getElementById('color-humedad_suelo');
+            var mensaje = ""; 
+            if (value >= 0 && value <= 48) {
+                mensaje = "¡Atención! Humedad del suelo insuficiente. Riesgo para cultivo. Esto puede causar marchitamiento, menor rendimiento y calidad de los tallos!";
+                iconoHTML.style.color = '#EE3200';
+            } else if (value >= 49 && value <= 80) {
+                mensaje = "¡Óptima humedad del suelo! Condiciones ideales para la caña de azúcar";
+                iconoHTML.style.color = '#81F233';
+            } else if (value >= 81 && value <= 100)  {
+                mensaje = "¡Atencion! Humedad del suelo excesiva. Riesgo para cultivo. Puede provocar problemas de aireación en las raíces, promover el desarrollo de enfermedades en los tallos!";
+                iconoHTML.style.color = '#EE3200';
+            }
+            console.log(mensaje);
+            const mensajeNuevo = JSON.stringify(mensaje);
+            humedadNuevo.innerText = mensajeNuevo.replace(/"/g, "");
+        }
+
+        // Update the progress bar based on the value
+        function updateValorLuz(value) {
+            console.log(value);
+            const valueNuevo = parseInt(value);
+            const humedadNuevo = document.getElementById('luz_valor');
+            const iconoHTML = document.getElementById('color-luz');
+            var mensaje = ""; 
+            if (value >= 0 && value <= 6) {
+                mensaje = "No ha recibido suficientes horas de luz directa en el día.";
+                iconoHTML.style.color = '#EE3200';
+            } else if (value >= 7 && value <= 8) {
+                mensaje = "Ha recibido suficientes horas de luz directa en el día.";
+                iconoHTML.style.color = '#81F233';
+            } else {
+                mensaje = "¡Atención! Exceso de luz directa en el día.";
+                iconoHTML.style.color = '#EE3200';
+            }
+            console.log(mensaje);
+            const mensajeNuevo = JSON.stringify(mensaje);
+            humedadNuevo.innerText = mensajeNuevo.replace(/"/g, "");
         }
 
         // Update the progress bar based on the value
@@ -477,9 +585,11 @@
                     const temperatura = objeto['temperatura'];
                     const newhumedad = JSON.stringify(humedad);
                     //console.log("newhumedad", newhumedad);
+                    updateValorHumedad(newhumedad.replace(/"/g, ""));
                     app_humedad.innerText = newhumedad.replace(/"/g, "")+ " %";
                     const newtemperatura = JSON.stringify(temperatura);
                     //console.log("newtemperatura", newtemperatura);
+                    updateValorTemperatura(newtemperatura.replace(/"/g, ""));
                     app_temperatura.innerText = newtemperatura.replace(/"/g, "") + " °C";
                     const time = objeto['tiempo'];
                     //console.log("time", time); // Imprime la fecha formateada
@@ -586,6 +696,7 @@
                     tiempo_actualizacion_luz.innerText = newtiempo.replace(/"/g, "");
                     const newhumedad = JSON.stringify(humedad);
                     //console.log("newhumedad", newhumedad);
+                    updateValorHumedadSuelo(newhumedad.replace(/"/g, ""));
                     app_hum_suelo.innerText = newhumedad.replace(/"/g, "")+ " %";
 
                     //const keys = Object.keys(children);
@@ -602,6 +713,7 @@
                     //updateProgressBar(parseInt(value),value2, "progressM", "progressValueM");
                     var jsonLuz = JSON.stringify("De sol directa recibida")
                     date_last_luz.innerText = jsonLuz.replace(/"/g, "");
+                    updateValorLuz(contadorHorasLuz);
                     app_luz.innerText = JSON.stringify(contadorHorasLuz) + " h";
                 } else {
                     ////console.log("El nodo 'sensores/movimiento' no tiene hijos en la base de datos");
