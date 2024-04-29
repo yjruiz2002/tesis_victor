@@ -541,6 +541,9 @@
 @media (min-width: 240px) and (max-width: 479px) {
     /* dashboard one */
     /* sidebar */
+    .ajuste{
+        font-size: 22px !important;
+    }
     .sidebar-menu {
         position: fixed;
         left: -90%;

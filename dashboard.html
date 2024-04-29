@@ -135,8 +135,8 @@
                     </div>
                 </div>
                 <br>
-                <h4><div id="tiempo_actualizacion" style="float: left;"></div>
-                    <div id="tiempo_actualizacion_luz" style="float: right;"></div></h4>
+                <h4><div class="row"><div class="col-md-7 ajuste" id="tiempo_actualizacion" ></div>
+                    <div class="col-md-5 ajuste" id="tiempo_actualizacion_luz" ></div></div></h4>
                 <!-- page title area end -->
                 <!-- sales report area start -->
                 <div class="sales-report-area mt-5 mb-5">
@@ -222,9 +222,8 @@
                                 <div id="verview-shart" style="display: block;"></div>
                                 <div id="verview-shart-t" style="display: none;"></div>
                                 <div id="verview-shart-hs" style="display: none;"></div>
-                                <h4 class="header-title mb-0"><div id="verview-shart-luz" style="display: none;">
-                                    <img id="mi-imagen" src="assets/images/fonts/sol.jpg" alt="sol">
-                                </div></h4>
+                                <h5 class="header-title mb-0"><div id="verview-shart-luz" style="display: none;">
+                                </div></h5>
                                 <hr>
                                 <div class="d-flex justify-content-center align-items-center">
                                     <h4 class="header-title mb-0">Mensajes de enlace</h4>
@@ -363,10 +362,10 @@
             if (value >= 0 && value <= 23) {
                 mensaje = "¡Atención! Temperaturas insuficientes. Riesgo para cultivo. Esto puede retrasar o detener la maduración de la caña de azúcar!";
                 iconoHTML.style.color = '#EE3200';
-            } else if (value >= 24 && value <= 33) {
+            } else if (value >= 24 && value <= 35) {
                 mensaje = "¡Excelente condición! Temperatura óptima para el cultivo.";
                 iconoHTML.style.color = '#81F233';
-            } else if (value >= 34 && value <= 100)  {
+            } else if (value >= 36 && value <= 100)  {
                 mensaje = "¡Atencion! Temperaturas excesivas. Riesgo para cultivo. Calor excesivo acelera la descomposición de los tallos!";
                 iconoHTML.style.color = '#EE3200';
             }
@@ -584,7 +583,6 @@
                 var app_temperatura = document.getElementById('app_temperatura');
                 var tiempo_actualizacion = document.getElementById('tiempo_actualizacion');
                 tiempo_actualizacion.style.color = "white";
-                tiempo_actualizacion.style.textAlign = "left";
                 
                 if (snapshot.exists()) {
                     const children = snapshot.val();
@@ -647,7 +645,6 @@
                 var date_last_luz = document.getElementById('date_last_luz');
                 date_last_luz.style.color = "white";
                 tiempo_actualizacion_luz.style.color = "white";
-                tiempo_actualizacion_luz.style.textAlign = "right";
                 if (snapshot.exists()) {
                     //console.log("...");
                     const children = snapshot.val();
@@ -1370,8 +1367,23 @@
                             valores.push(luzValues[posiciones[i]]);
                         }
                         var app_humedad = document.getElementById('verview-shart-luz');
-                        var jsonLuz = JSON.stringify(contadorLuz + " minutos de luz directa recibida")
-                        app_humedad.innerText = jsonLuz.replace(/"/g, "");
+                        var jsonLuz = JSON.stringify(contadorLuz + " minutos de luz directa recibida");
+                        var texto = jsonLuz.replace(/"/g, "");
+
+                        // Crear un elemento de imagen
+                        var imagen = document.createElement('img');
+                        imagen.src = 'assets/images/fonts/sol.jpg';         
+                        imagen.alt = 'Descripción de la imagen'; 
+
+                        // Establecer el tamaño de la imagen en píxeles
+                        imagen.style.width = '50px'; 
+                        imagen.style.height = 'auto'; 
+                        // Agregar la imagen y el texto al contenido del elemento
+                        app_humedad.innerHTML = '';
+                        app_humedad.appendChild(imagen);
+                        app_humedad.appendChild(document.createTextNode(texto));
+
+                        app_humedad.style.marginBottom = '20px';
 
                     } else {
                         console.log("No data available");
@@ -1380,10 +1392,6 @@
                     console.error("Error getting data:", error);
                 });
             }, 5000);
-                    // Obtener el elemento de la imagen por su ID
-            var imagen = document.getElementById('mi-imagen');
-            // Cambiar la ruta de la imagen
-            imagen.src = 'assets/images/fonts/sol.jpg';
         }
     </script>
     <script>
