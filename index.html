@@ -1,6 +1,99 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script type="module">
+        
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getDatabase, ref, set, get, child, onValue, orderByKey, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+    
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyCJL6YfOQ_cNrLWla8praOgF03Z2BxKOXQ",
+        authDomain: "tesis-final-84a29.firebaseapp.com",
+        databaseURL: "https://tesis-final-84a29-default-rtdb.firebaseio.com",
+        projectId: "tesis-final-84a29",
+        storageBucket: "tesis-final-84a29.appspot.com",
+        messagingSenderId: "751823933609",
+        appId: "1:751823933609:web:672b19593e37faddd999b8"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+       
+    
+        //get ref to database services
+        const db = getDatabase(app);
+    
+        const messageRef = ref(db, 'Datos/usuario1');
+
+        const message2Ref = ref(db, 'Datos/usuario2');
+
+        var passV = "";
+        var passM = "";
+        var userV = "";
+        var userM = "";
+
+        function obtenerDatos() {
+        return new Promise((resolve, reject) => {
+            get(messageRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const children = snapshot.val();
+                    const lastChildText = JSON.stringify(children);
+                    const obj = JSON.parse(lastChildText);
+                    passV = obj.pass;
+                    userV = obj.user;
+                    resolve(); // Resuelve la promesa una vez que se obtienen los valores
+                } else {
+                    reject("No data available");
+                }
+            }).catch((error) => {
+                reject(error);
+            });
+        });
+    }
+
+    obtenerDatos().then(() => {
+
+        return obtenerDatos2();
+    }).then(() => {
+
+        // Disparar un evento personalizado una vez que se hayan obtenido todos los valores
+        var obtenerValoresEvent = new CustomEvent('obtenerValoresCompletado', {
+            detail: {
+                passV: passV,
+                userV: userV,
+                passM: passM,
+                userM: userM
+            }
+        });
+        document.dispatchEvent(obtenerValoresEvent);
+    }).catch((error) => {
+        console.error("Error obteniendo datos:", error);
+    });
+
+    function obtenerDatos2() {
+        return new Promise((resolve, reject) => {
+            get(message2Ref).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const children = snapshot.val();
+                    const lastChildText = JSON.stringify(children);
+                    const obj = JSON.parse(lastChildText);
+                    passM = obj.pass;
+                    userM = obj.user;
+                    resolve(); // Resuelve la promesa una vez que se obtienen los valores
+                } else {
+                    reject("No data available");
+                }
+            }).catch((error) => {
+                reject(error);
+            });
+        });
+    }
+        
+    </script>
     <title>Login Page</title>
     <style>
         body {
@@ -126,91 +219,55 @@
         </span>
         <img src="assets/images/fonts/logo-telecom.png" style="width: 300px; margin-top: 2px; margin-right: 10px;" class="logo">
         <h1>Inicio de sesión</h1>
-        <form name=form action="dashboard.html" id="formulario" method="get">
+        <form name=form  id="formulario" method="get">
             <label for="text" ></label>
-            <input type="text" placeholder="Usuario" name="usuario" required>
+            <input type="text" placeholder="Usuario" name="usuario" id="usuario" required>
             <label for="text"></label>
-            <input type="password" placeholder="Contraseña" name="password" required>
+            <input type="password" placeholder="Contraseña" name="password" id="password" required>
             <center><button onclick="iniciarSesion()">LOGIN</button></center>
         </form>
     </div>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase, ref, set, get, child, onValue, orderByKey, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
     
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-        apiKey: "AIzaSyCJL6YfOQ_cNrLWla8praOgF03Z2BxKOXQ",
-        authDomain: "tesis-final-84a29.firebaseapp.com",
-        databaseURL: "https://tesis-final-84a29-default-rtdb.firebaseio.com",
-        projectId: "tesis-final-84a29",
-        storageBucket: "tesis-final-84a29.appspot.com",
-        messagingSenderId: "751823933609",
-        appId: "1:751823933609:web:672b19593e37faddd999b8"
-        };
-    
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-       
-    
-        //get ref to database services
-        const db = getDatabase(app);
-    
-        const messageRef = ref(db, 'Datos/usuario1');
-
-        const message2Ref = ref(db, 'Datos/usuario2');
-
+    <script>
         var passV = "";
-        var passM = "";
         var userV = "";
+        var passM = "";
         var userM = "";
-
-        get(messageRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const children = snapshot.val();
-                const lastChildText = JSON.stringify(children);
-                const obj = JSON.parse(lastChildText);
-                passV = obj.pass;
-                userV = obj.user;
-            } else {
-                //console.log("No data available");
-            }
-        }).catch((error) => {
-        console.error("Error getting data:", error);
+    
+        // Escuchar el evento personalizado para obtener los valores
+        document.addEventListener('obtenerValoresCompletado', function(event) {
+            passV = event.detail.passV;
+            userV = event.detail.userV;
+            passM = event.detail.passM;
+            userM = event.detail.userM;
+            console.log("passV", passV);
+            console.log("userV", userV);
+            console.log("passM", passM);
+            console.log("userM", userM);
         });
-
-        get(message2Ref).then((snapshot) => {
-            if (snapshot.exists()) {
-                const children = snapshot.val();
-                const lastChildText = JSON.stringify(children);
-                const obj = JSON.parse(lastChildText);
-                passM = obj.pass;
-                userM = obj.user;
-            } else {
-                //console.log("No data available");
-            }
-        }).catch((error) => {
-        console.error("Error getting data:", error);
-        });
-        
+    
+        // Función para iniciar sesión
         function iniciarSesion() {
-
-            
-        
-
-            if ((document.form.password.value==passV && document.form.login.value==userV) || (document.form.password.value==passM && document.form.login.value==userM)){ 
-                document.form.submit();
-            } 
-            else{ 
-                window.alert('Usuario o contraseña incorrectos, por favor intentelo de nuevo');
-                document.getElementById('formulario').reset();
-            } 
-
-            
+            var usuario = document.getElementById("usuario").value;
+            var password = document.getElementById("password").value;
+            if (usuario === userV && password === passV) {
+                document.getElementById("formulario").action = "dashboard.html";
+                document.getElementById("formulario").submit();
+            } else {
+                alert("Usuario o contraseña incorrectos");
+                // Vaciar los valores de usuario y password
+                document.getElementById("usuario").value = "";
+                document.getElementById("password").value = "";
+            }
         }
+    
+        // Agregar un evento 'submit' al formulario
+        document.getElementById("formulario").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evitar el envío del formulario
+            if (!event.defaultPrevented) { // Verificar si el evento ya fue prevenido
+                iniciarSesion(); // Llamar a la función iniciarSesion()
+            }
+        });
     </script>
 </body>
 </html>
