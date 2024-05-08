@@ -246,7 +246,7 @@
         function iniciarSesion() {
             var usuario = document.getElementById("usuario").value;
             var password = document.getElementById("password").value;
-            if (usuario === userV && password === passV) {
+            if ((usuario === userV && password === passV ) || (usuario === userM && password === passM )){
                 document.getElementById("formulario").action = "dashboard.html";
                 document.getElementById("formulario").submit();
             } else {
