@@ -35,11 +35,17 @@
     <!-- modernizr css -->
     <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
     <style>
+        body {
+            background-image: url("assets/images/fonts/fondo3.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin: 0;
+            height: 100%;
+        }
         .main-content-inner {
             width: 100%;
             max-height: 100%;
-            background-image: url("assets/images/fonts/fondo3.jpg");
-            justify-content: center;
         }
         .map-container {
             position: relative;
@@ -217,8 +223,11 @@
                                     </select>
                                 </div>
                                 <hr>
-                                <input type="date" id="start" name="trip-start" min="2024-02-01" />
-                                
+                                <label for="start" style="margin-right: 5px;">Fecha de inicio:</label>
+                                <input type="date" id="start" name="trip-start" min="2024-02-01" style="margin-right: 30px;" />
+
+                                <label for="start1" style="margin-right: 5px;">Fecha de fin:</label>
+                                <input type="date" id="start1" name="trip-start" min="2024-02-01" />
                                 <div id="verview-shart" style="display: block;"></div>
                                 <div id="verview-shart-t" style="display: none;"></div>
                                 <div id="verview-shart-hs" style="display: none;"></div>
@@ -323,16 +332,10 @@
     </script>
     <script src="assets/js/scripts.js"></script>
     <script type="module">
-        function convertirTiempo(valor) {
-            var horas = Math.floor(valor);
-            var minutos = Math.round((valor - horas) * 60);
-            var tiempo = horas.toString().padStart(2, '0') + ':' + minutos.toString().padStart(2, '0');
-            return tiempo;
-        }
 
         // Update the progress bar based on the value
         function updateValorHumedad(value) {
-            console.log(value);
+            //console.log(value);
             const valueNuevo = parseInt(value);
             const humedadNuevo = document.getElementById('humedad_valor');
             const iconoHTML = document.getElementById('color-humedad');
@@ -347,14 +350,14 @@
                 mensaje = "¡Atención! Condiciones de humedad ambiental excesivas para el cultivo de caña de azúcar.";
                 iconoHTML.style.color = '#EE3200';
             }
-            console.log(mensaje);
+            //console.log(mensaje);
             const mensajeNuevo = JSON.stringify(mensaje);
             humedadNuevo.innerText = mensajeNuevo.replace(/"/g, "");
         }
 
         // Update the progress bar based on the value
         function updateValorTemperatura(value) {
-            console.log(value);
+            //console.log(value);
             const valueNuevo = parseInt(value);
             const humedadNuevo = document.getElementById('temperatura_valor');
             const iconoHTML = document.getElementById('color-temperatura');
@@ -369,14 +372,14 @@
                 mensaje = "¡Atencion! Temperaturas excesivas. Riesgo para cultivo. Calor excesivo acelera la descomposición de los tallos!";
                 iconoHTML.style.color = '#EE3200';
             }
-            console.log(mensaje);
+            //console.log(mensaje);
             const mensajeNuevo = JSON.stringify(mensaje);
             humedadNuevo.innerText = mensajeNuevo.replace(/"/g, "");
         }
 
         // Update the progress bar based on the value
         function updateValorHumedadSuelo(value) {
-            console.log(value);
+            //console.log(value);
             const valueNuevo = parseInt(value);
             const humedadNuevo = document.getElementById('humedad_suelo_valor');
             const iconoHTML = document.getElementById('color-humedad_suelo');
@@ -391,14 +394,14 @@
                 mensaje = "¡Atencion! Humedad del suelo excesiva. Riesgo para cultivo. Puede provocar problemas de aireación en las raíces, promover el desarrollo de enfermedades en los tallos!";
                 iconoHTML.style.color = '#EE3200';
             }
-            console.log(mensaje);
+            //console.log(mensaje);
             const mensajeNuevo = JSON.stringify(mensaje);
             humedadNuevo.innerText = mensajeNuevo.replace(/"/g, "");
         }
 
         // Update the progress bar based on the value
         function updateValorLuz(value) {
-            console.log(value);
+            //console.log(value);
             const valueNuevo = parseInt(value);
             const humedadNuevo = document.getElementById('luz_valor');
             const iconoHTML = document.getElementById('color-luz');
@@ -413,7 +416,7 @@
                 mensaje = "¡Atención! Exceso de luz directa en el día.";
                 iconoHTML.style.color = '#EE3200';
             }
-            console.log(mensaje);
+            //console.log(mensaje);
             const mensajeNuevo = JSON.stringify(mensaje);
             humedadNuevo.innerText = mensajeNuevo.replace(/"/g, "");
         }
@@ -428,11 +431,11 @@
 
             if (value >= 0 && value <= 42) {
                 progress.style.backgroundColor = '#53F555';
-            } else if (value > 42 && value <= 86) {
+            } else if (value > 42 && value <= 92) {
                 progress.style.backgroundColor = '#239E25';
-            } else if (value > 86 && value <= 95) {
+            } else if (value > 92 && value <= 97) {
                 progress.style.backgroundColor = '#9B9E23';
-            } else if (value > 95 && value <= 107) {
+            } else if (value > 97 && value <= 107) {
                 progress.style.backgroundColor = '#9E8423';
             } else if (value > 107 && value <= 118) {
                 progress.style.backgroundColor = '#9E4123';
@@ -444,6 +447,32 @@
             var newFecha = fecha.replace(/"/g, "");
             var newHora = hora.replace(/"/g, "");
             progressTiempo.textContent = newFecha + " " + newHora;
+        }
+
+        function getDaysBetweenDates(date1, date2) {
+            const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
+            const diffDays = Math.round(Math.abs((date1 - date2) / oneDay));
+            
+            // Create an array of all the dates between the two dates
+            const dates = [];
+            for (let i = 0; i <= diffDays; i++) {
+                const currentDate = new Date(date1.getTime() + i * oneDay);
+                const formattedDate = currentDate.toLocaleDateString();
+                // Create a new Date object from the string, specifying the order of the parts
+                const dateObj = new Date(formattedDate.split('/')[2], formattedDate.split('/')[1] - 1, formattedDate.split('/')[0]);
+                dates.push(dateObj);
+            }
+            
+            return dates;
+        }
+
+        function calcularPromedio(lista) {
+            let suma = 0;
+            for (const numero of lista) {
+                suma += numero;
+            }
+            const promedio = suma / lista.length;
+            return promedio;
         }
 
         const humedadelements = [];
@@ -494,86 +523,90 @@
                 //console.log("No data available");
             }
         }).catch((error) => {
-            console.error("Error getting data:", error);
+            //console.error("Error getting data:", error);
         });
 
-        get(messageAcuse1).then((snapshot) => {
-            if (snapshot.exists()) {
-                const children = snapshot.val();
-                const keys = Object.keys(children);
-                const lastKey = keys[keys.length - 1];
-                const lastChild = children[lastKey];
-                const lastChildText = JSON.stringify(lastChild);
-                const objeto = JSON.parse(lastChildText);
-                const potencia_rx = objeto['potencia_rx'];
-                const newpotencia = JSON.stringify(potencia_rx);
-                const tiempo = objeto['tiempo'];
-                console.log("newpotencia", potencia_rx, tiempo);
-                //console.log("time", time); // Imprime la fecha formateada
-                
-                var valores = tiempo.match(/\((.*?)\)/)[1];
-                var lista = valores.split(", ");
-                console.log("time", lista); // Imprime la fecha formateada
-                var año = parseInt(lista[0]);
-                var mes = parseInt(lista[1]);
-                var dia = parseInt(lista[2]);
-                var hora = parseInt(lista[3]);
-                var minuto = parseInt(lista[4]);
-                var fecha = new Date(año, mes - 1, dia, hora, minuto); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
-                var formatoFecha = fecha.toLocaleDateString();
-                var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
-                //console.log("time", formatoFecha); // Imprime la fecha formateada
-                var value = newpotencia.replace(/"/g, ""); 
-                var value2 = parseInt(value);
-                value = value.replace(/-/g, "");
-                //console.log("VALUEEE", parseInt(value));
-                updateProgressBar(parseInt(value),value2, "progress", "progressValue", "tiempo_calidad_H", JSON.stringify(formatoFecha), JSON.stringify(formatoHora));
+        setInterval(() => {
+            get(messageAcuse1).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const children = snapshot.val();
+                    const keys = Object.keys(children);
+                    const lastKey = keys[keys.length - 1];
+                    const lastChild = children[lastKey];
+                    const lastChildText = JSON.stringify(lastChild);
+                    const objeto = JSON.parse(lastChildText);
+                    const potencia_rx = objeto['potencia_rx'];
+                    const newpotencia = JSON.stringify(potencia_rx);
+                    const tiempo = objeto['tiempo'];
+                    //console.log("newpotencia", potencia_rx, tiempo);
+                    //console.log("time", time); // Imprime la fecha formateada
                     
-            } else {
-                //console.log("No data available");
-            }
-        }).catch((error) => {
-            console.error("Error getting data:", error);
-        });
+                    var valores = tiempo.match(/\((.*?)\)/)[1];
+                    var lista = valores.split(", ");
+                    //console.log("time", lista); // Imprime la fecha formateada
+                    var año = parseInt(lista[0]);
+                    var mes = parseInt(lista[1]);
+                    var dia = parseInt(lista[2]);
+                    var hora = parseInt(lista[3]);
+                    var minuto = parseInt(lista[4]);
+                    var fecha = new Date(año, mes - 1, dia, hora, minuto); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
+                    var formatoFecha = fecha.toLocaleDateString();
+                    var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
+                    //console.log("time", formatoFecha); // Imprime la fecha formateada
+                    var value = newpotencia.replace(/"/g, ""); 
+                    var value2 = parseInt(value);
+                    value = value.replace(/-/g, "");
+                    //console.log("VALUEEE", parseInt(value));
+                    updateProgressBar(parseInt(value),value2, "progress", "progressValue", "tiempo_calidad_H", JSON.stringify(formatoFecha), JSON.stringify(formatoHora));
+                        
+                } else {
+                    //console.log("No data available");
+                }
+            }).catch((error) => {
+                //console.error("Error getting data:", error);
+            });
+        }, 5000);
 
-        get(messageAcuse2).then((snapshot) => {
-            if (snapshot.exists()) {
-                const children = snapshot.val();
-                const keys = Object.keys(children);
-                const lastKey = keys[keys.length - 1];
-                const lastChild = children[lastKey];
-                const lastChildText = JSON.stringify(lastChild);
-                const objeto = JSON.parse(lastChildText);
-                const potencia_rx = objeto['potencia_rx'];
-                const newpotencia = JSON.stringify(potencia_rx);
-                const tiempo = objeto['tiempo'];
-                console.log("newpotencia", potencia_rx, tiempo);
-                //console.log("time", time); // Imprime la fecha formateada
-                
-                var valores = tiempo.match(/\((.*?)\)/)[1];
-                var lista = valores.split(", ");
-                console.log("time", lista); // Imprime la fecha formateada
-                var año = parseInt(lista[0]);
-                var mes = parseInt(lista[1]);
-                var dia = parseInt(lista[2]);
-                var hora = parseInt(lista[3]);
-                var minuto = parseInt(lista[4]);
-                var fecha = new Date(año, mes - 1, dia, hora, minuto); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
-                var formatoFecha = fecha.toLocaleDateString();
-                var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
-                //console.log("time", formatoFecha); // Imprime la fecha formateada
-                var value = newpotencia.replace(/"/g, ""); 
-                var value2 = parseInt(value);
-                value = value.replace(/-/g, "");
-                //console.log("VALUEEE", parseInt(value));
-                updateProgressBar(parseInt(value),value2, "progressM", "progressValueM", "tiempo_calidad_M", JSON.stringify(formatoFecha), JSON.stringify(formatoHora));
+        setInterval(() => {
+            get(messageAcuse2).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const children = snapshot.val();
+                    const keys = Object.keys(children);
+                    const lastKey = keys[keys.length - 1];
+                    const lastChild = children[lastKey];
+                    const lastChildText = JSON.stringify(lastChild);
+                    const objeto = JSON.parse(lastChildText);
+                    const potencia_rx = objeto['potencia_rx'];
+                    const newpotencia = JSON.stringify(potencia_rx);
+                    const tiempo = objeto['tiempo'];
+                    //console.log("newpotencia", potencia_rx, tiempo);
+                    //console.log("time", time); // Imprime la fecha formateada
                     
-            } else {
-                //console.log("No data available");
-            }
-        }).catch((error) => {
-        console.error("Error getting data:", error);
-        });
+                    var valores = tiempo.match(/\((.*?)\)/)[1];
+                    var lista = valores.split(", ");
+                    //console.log("time", lista); // Imprime la fecha formateada
+                    var año = parseInt(lista[0]);
+                    var mes = parseInt(lista[1]);
+                    var dia = parseInt(lista[2]);
+                    var hora = parseInt(lista[3]);
+                    var minuto = parseInt(lista[4]);
+                    var fecha = new Date(año, mes - 1, dia, hora, minuto); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
+                    var formatoFecha = fecha.toLocaleDateString();
+                    var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
+                    //console.log("time", formatoFecha); // Imprime la fecha formateada
+                    var value = newpotencia.replace(/"/g, ""); 
+                    var value2 = parseInt(value);
+                    value = value.replace(/-/g, "");
+                    //console.log("VALUEEE", parseInt(value));
+                    updateProgressBar(parseInt(value),value2, "progressM", "progressValueM", "tiempo_calidad_M", JSON.stringify(formatoFecha), JSON.stringify(formatoHora));
+                        
+                } else {
+                    //console.log("No data available");
+                }
+            }).catch((error) => {
+            //console.error("Error getting data:", error);
+            });
+        }, 5000);
 
         // Retrieve all children of the messageRef node
         setInterval(() => {
@@ -616,9 +649,7 @@
                     var formatoFecha = fecha.toLocaleDateString();
                     var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
                     //console.log("VALUEEE", parseInt(value));
-                    
-                   
-                    
+
                     const newtiempo = "Últ. act. de H. y T. : " + JSON.stringify(formatoFecha) + " " + JSON.stringify(formatoHora);
                     
                     tiempo_actualizacion.innerText = newtiempo.replace(/"/g, "");
@@ -627,7 +658,7 @@
                 }
             })
             .catch((error) => {
-                console.error("Error al leer el mensaje:", error);
+                //console.error("Error al leer el mensaje:", error);
             });
         }, 5000);
         setInterval(() => {
@@ -696,31 +727,16 @@
                     var fecha = new Date(año, mes - 1, dia, hora, minuto); // Restamos 1 al mes porque los meses en JavaScript comienzan desde 0
                     var formatoFecha = fecha.toLocaleDateString();
                     var formatoHora = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Obtiene el formato de fecha local del navegador
-                    //console.log("VALUEEE", parseInt(value));
-                    
-                   
-                    
+
                     const newtiempo = "Últ. act. de S. y L. : " + JSON.stringify(formatoFecha) + " " + JSON.stringify(formatoHora);
                     
                     tiempo_actualizacion_luz.innerText = newtiempo.replace(/"/g, "");
                     const humedadSinDecimales = Math.floor(humedad);
                     const newhumedad = JSON.stringify(humedadSinDecimales);
-                    //console.log("newhumedad", newhumedad);
+
                     updateValorHumedadSuelo(newhumedad.replace(/"/g, ""));
                     app_hum_suelo.innerText = newhumedad.replace(/"/g, "")+ " %";
 
-                    //const keys = Object.keys(children);
-                    //const lastKey = keys[keys.length - 1];
-                    //const lastChild = children[lastKey];
-                    //const lastChildText = JSON.stringify(lastChild);
-                    //const objeto = JSON.parse(lastChildText);
-                    //const potencia = objeto['potencia_rx'];
-                    //const newpotencia = JSON.stringify(potencia);
-                    //var value = newpotencia.replace(/"/g, ""); 
-                    //var value2 = parseInt(value);
-                    //value = value.replace(/-/g, "");
-                    ////console.log("VALUEEE", parseInt(value));
-                    //updateProgressBar(parseInt(value),value2, "progressM", "progressValueM");
                     var jsonLuz = JSON.stringify("De sol directa recibida")
                     date_last_luz.innerText = jsonLuz.replace(/"/g, "");
                     updateValorLuz(contadorHorasLuz);
@@ -730,7 +746,7 @@
                 }
             })
             .catch((error) => {
-                console.error("Error al leer el mensaje:", error);
+                //console.error("Error al leer el mensaje:", error);
             });
         }, 5000);
         /*--------------  overview-chart start ------------*/
@@ -755,22 +771,57 @@
                     if (snapshot.exists()) {
                         const children = snapshot.val();
                         const campoFecha = document.getElementById('start');
+                        const campoFecha2 = document.getElementById('start1');
                         var valorFecha = campoFecha.value;
                         var fecha = new Date(valorFecha);
+                        
                         var dia = fecha.getDate() +1;
                         var mes = fecha.getMonth() + 1;
+                        if (dia == 32) {
+                            dia = 1
+                            mes= mes + 1;
+                        }
+                        
                         var year = fecha.getFullYear();
+                        //console.log(dia, mes, year);
+                        var valorFecha2 = campoFecha2.value;
+                        var fecha2 = new Date(valorFecha2);
+                        
+                        var dia2 = fecha2.getDate() + 1;
+                        var mes2 = fecha2.getMonth() + 1;
+                        if (dia2 == 32) {
+                            dia2 = 1
+                            mes2 = mes2 + 1;
+                        }
+                        
+                        var year2 = fecha2.getFullYear();
+                        //console.log(dia2, mes2, year2);
                         campoFecha.addEventListener('input', function() {
                             valorFecha = campoFecha.value;
                             fecha = new Date(valorFecha);
                             year = fecha.getFullYear();
                             dia = fecha.getDate() + 1;
+                            if (dia == 32) {
+                                dia = 1
+                            }
                             mes = fecha.getMonth() + 1;
-                            ////console.log("Día: ", dia);
-                            ////console.log("Mes: ", mes);
-                            ////console.log("Año: ", year);
                         });
-
+                        campoFecha2.addEventListener('input', function() {
+                            valorFecha2 = campoFecha2.value;
+                            fecha2 = new Date(valorFecha2);
+                            year2 = fecha2.getFullYear();
+                            dia2 = fecha2.getDate() + 1;
+                            if (dia2 == 32) {
+                                dia2 = 1
+                            }
+                            mes2 = fecha2.getMonth() + 1;
+                        });
+                        var fechaActualizada = new Date(year, mes - 1, dia);
+                        var fechaActualizada2 = new Date(year2, mes2 - 1, dia2);
+                        //console.log("fecha1", fechaActualizada); 
+                        //console.log("fecha2", fechaActualizada2); 
+                        const diasEntreFechas = getDaysBetweenDates(fechaActualizada, fechaActualizada2);
+                        //console.log("fecha", diasEntreFechas); 
                         ////console.log("fecha", valorFecha); 
                         ////console.log("children", children)
                         const lastChildText = JSON.stringify(children);
@@ -793,69 +844,136 @@
 
                         ////console.log("tiempo", tiempoValues);
                         const valuest = Object.values(tiempoValues);
-                        const posiciones = [];
+                        var puntos = [];
+                        var texto = "";
+                        if (diasEntreFechas.length > 1) {
+                            texto = "Fecha";
+                            for (var i = 0; i < diasEntreFechas.length; i++) {
+                                var posiciones = [];
+                                //console.log(diasEntreFechas[i]);
+                                
+                                // Create a new Date object from the string
+                                const dateObj = new Date(diasEntreFechas[i]);
+                                //console.log("fecha", dateObj);
+                                // Get the day of the month (1-31)
+                                const d = dateObj.getDate();
+                                const m = dateObj.getMonth()+1;
+                                const y = dateObj.getFullYear();
 
-                        for (var i = 0; i < valuest.length; i++) {
-                            var hora = valuest[i].split(',');
-                            var horanew = hora[0].replace(/^\(/, '');
-                            var mesnew = hora[1].replace(/^\ /, '');
-                            var dianew = hora[2].replace(/^\ /, '');
-                            if(horanew == year.toString()){
-                                if(mesnew == mes.toString()){
-                                    if(dianew == dia.toString()){
-                                        posiciones.push(i);
+                                //console.log(d);
+                                //console.log(m);
+                                //console.log(y);
+
+                                for (var j = 0; j < valuest.length; j++) {
+                                    var hora = valuest[j].split(',');
+                                    var horanew = hora[0].replace(/^\(/, '');
+                                    var mesnew = hora[1].replace(/^\ /, '');
+                                    var dianew = hora[2].replace(/^\ /, '');
+                                    if(horanew == y.toString()){
+                                        if(mesnew == m.toString()){
+                                            if(dianew == d.toString()){
+                                                posiciones.push(j);
+                                            }
+                                        }
+                                    }
+                                }
+                                var humedadLista = [];
+                                for (var k = 0; k < posiciones.length; k++) {
+                                    humedadLista.push(parseInt(humedadValues[posiciones[k]]));
+                                }
+                                //console.log(i,"-",humedadLista);
+                                var promedio = calcularPromedio(humedadLista);
+                                if (humedadLista.length === 0) {
+                                    //console.log("entro");
+                                    promedio = 0;
+                                    //console.log(i, "-",Math.round(promedio));
+                                    //let fechacompleta = new Date(y, m-1, d);
+                                    //var fechacompletaformateada = fechacompleta.toISOString().slice(0, 10);
+                                    //console.log("fechacompleta",fechacompleta.toISOString().slice(0, 10));
+                                    //var puntounico = [];
+                                    //puntounico.push(fechacompletaformateada);
+                                    //puntounico.push(Math.round(promedio));
+
+                                    //puntos.push(puntounico);
+                                }
+                                else {
+                                    //console.log(i, "-",Math.round(promedio));
+                                    let fechacompleta = new Date(y, m-1, d);
+                                    var fechacompletaformateada = fechacompleta.toISOString().slice(0, 10);
+                                    //console.log("fechacompleta",fechacompleta.toISOString().slice(0, 10));
+                                    var puntounico = [];
+                                    puntounico.push(fechacompletaformateada);
+                                    puntounico.push(Math.round(promedio));
+
+                                    puntos.push(puntounico);
+                                }
+                                
+                                
+                            }
+                            //console.log(puntos);
+                        }
+                        else {
+                            texto="Tiempo (h)";
+                            //console.log ("entro");
+                            var posiciones = [];
+                            for (var i = 0; i < valuest.length; i++) {
+                                var hora = valuest[i].split(',');
+                                var horanew = hora[0].replace(/^\(/, '');
+                                var mesnew = hora[1].replace(/^\ /, '');
+                                var dianew = hora[2].replace(/^\ /, '');
+                                if(horanew == year.toString()){
+                                    if(mesnew == mes.toString()){
+                                        if(dianew == dia.toString()){
+                                            posiciones.push(i);
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        ////console.log("posiciones", posiciones);
-                        const elementost = valuest.slice(-10);
-                        ////console.log("tiempo", elementost);
-                        const values = Object.values(humedadValues);
-                        const elementos = values.slice(-10);
-                        ////console.log("humedad", elementos);
-                        const listaDeEnteros = elementos.map(str => parseInt(str));
-                        const listaHoras = [];
-                        const listaMin = [];
-                        for (var i = 0; i < valuest.length; i++) {
-                            var hora = valuest[i].split(',');
-                            listaHoras.push(hora[3]);
-                            listaMin.push(hora[4]);
-                        }
-                        const listaHorasNew = listaHoras.map(str => parseInt(str));
-                        const listaMinNew = listaMin.map(str => parseInt(str));
-                        const puntos = [];
-                        ////console.log("Fechas:", listaHorasNew);
-                        ////console.log("Rangos:", humedadValues);
-                        var ejeHumedad = []; 
-                        for (var i = 0; i < posiciones.length; i++) {
-                            ejeHumedad.push(parseInt(humedadValues[posiciones[i]]));
-                            var minutosTotales = parseInt(listaHorasNew[posiciones[i]]) * 60 + parseInt(listaMinNew[posiciones[i]]);
-                            var minimoMinutos = Math.floor(minutosTotales / 60) * 60; // Redondear hacia abajo a la hora más cercana
-                            var maximoMinutos = minimoMinutos + 60; // Sumar 60 minutos para obtener la siguiente hora
+                            //console.log("posiciones", posiciones);
+                            const elementost = valuest.slice(-10);
+                            //console.log("tiempo", elementost);
+                            const values = Object.values(humedadValues);
+                            const elementos = values.slice(-10);
+                            //console.log("humedad", elementos);
+                            const listaDeEnteros = elementos.map(str => parseInt(str));
+                            const listaHoras = [];
+                            const listaMin = [];
+                            for (var i = 0; i < valuest.length; i++) {
+                                var hora = valuest[i].split(',');
+                                listaHoras.push(hora[3]);
+                                listaMin.push(hora[4]);
+                            }
+                            const listaHorasNew = listaHoras.map(str => parseInt(str));
+                            const listaMinNew = listaMin.map(str => parseInt(str));
+                            ////console.log("Fechas:", listaHorasNew);
+                            ////console.log("Rangos:", humedadValues);
+                            var ejeHumedad = []; 
+                            for (var i = 0; i < posiciones.length; i++) {
+                                ejeHumedad.push(parseInt(humedadValues[posiciones[i]]));
+                                var minutosTotales = parseInt(listaHorasNew[posiciones[i]]) * 60 + parseInt(listaMinNew[posiciones[i]]);
+                                var minimoMinutos = Math.floor(minutosTotales / 60) * 60; // Redondear hacia abajo a la hora más cercana
+                                var maximoMinutos = minimoMinutos + 60; // Sumar 60 minutos para obtener la siguiente hora
 
-                            var valorEnEscalaLarge = ((minutosTotales - minimoMinutos) / (maximoMinutos - minimoMinutos));
-                            var valorEnEscala = listaMinNew[posiciones[i]] / 100;
-                            //console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
-                            const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(humedadValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
-                            ////console.log("cada punto", punto);
-                            puntos.push(punto); // Agregar el punto a la lista de puntos
+                                var valorEnEscalaLarge = ((minutosTotales - minimoMinutos) / (maximoMinutos - minimoMinutos));
+                                var valorEnEscala = listaMinNew[posiciones[i]] / 100;
+                                //console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
+                                const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(humedadValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
+                                ////console.log("cada punto", punto);
+                                puntos.push(punto); // Agregar el punto a la lista de puntos
+                            }
+                            //console.log("puntos", puntos); // Imprimir los puntos resultantes
+                            var minimo = Math.min(...ejeHumedad) - 1;
+                            var maximo = Math.max(...ejeHumedad) + 1;
                         }
-                        //console.log("puntos", puntos); // Imprimir los puntos resultantes
-                        var minimo = Math.min(...ejeHumedad) - 1;
-                        var maximo = Math.max(...ejeHumedad) + 1;
-                        //console.log("max", maximo);
-                        //console.log("min", minimo);
+                        //console.log("puntos", puntos);
                         var myConfig = {
                             "type": "line",
                             "scale-x": {
-                                "min-value": 0,
-                                "max-value": 24,
                                 "label": {
                                 "font-size": 14,
                                 "offset-x": 0, 
-                                "text": "Tiempo (h)",
+                                "text": texto,
                                 "color": "#2E86C1"
                                 },
                                 "item": {
@@ -867,8 +985,6 @@
                                 }
                             },
                             "scale-y": {
-                                "min-value": minimo,
-                                "max-value": maximo,
                                 "label": {
                                 "font-size": 14,
                                 "offset-x": 0,
@@ -911,7 +1027,7 @@
                             ////console.log("No data available");
                         }
                 }).catch((error) => {
-                    console.error("Error getting data:", error);
+                    //console.error("Error getting data:", error);
                 });
             }, 5000);
         }
@@ -943,110 +1059,207 @@
 
            setInterval(() => {
                get(messageRef).then((snapshot) => {
-                   if (snapshot.exists()) {
-                       const children = snapshot.val();
-                       const campoFecha = document.getElementById('start');
-                       var valorFecha = campoFecha.value;
-                       var fecha = new Date(valorFecha);
-                       var dia = fecha.getDate() +1;
-                       var mes = fecha.getMonth() + 1;
-                       var year = fecha.getFullYear();
-                       campoFecha.addEventListener('input', function() {
-                           valorFecha = campoFecha.value;
-                           fecha = new Date(valorFecha);
-                           year = fecha.getFullYear();
-                           dia = fecha.getDate() + 1;
-                           mes = fecha.getMonth() + 1;
-                           ////console.log("Día: ", dia);
-                           ////console.log("Mes: ", mes);
-                           ////console.log("Año: ", year);
-                       });
+                    if (snapshot.exists()) {
+                        const children = snapshot.val();
+                        const campoFecha = document.getElementById('start');
+                        const campoFecha2 = document.getElementById('start1');
+                        var valorFecha = campoFecha.value;
+                        var fecha = new Date(valorFecha);
+                        
+                        var dia = fecha.getDate() +1;
+                        var mes = fecha.getMonth() + 1;
+                        if (dia == 32) {
+                            dia = 1
+                            mes= mes + 1;
+                        }
+                        
+                        var year = fecha.getFullYear();
+                        //console.log(dia, mes, year);
+                        var valorFecha2 = campoFecha2.value;
+                        var fecha2 = new Date(valorFecha2);
+                        
+                        var dia2 = fecha2.getDate() + 1;
+                        var mes2 = fecha2.getMonth() + 1;
+                        if (dia2 == 32) {
+                            dia2 = 1
+                            mes2 = mes2 + 1;
+                        }
+                        
+                        var year2 = fecha2.getFullYear();
+                        //console.log(dia2, mes2, year2);
+                        campoFecha.addEventListener('input', function() {
+                            valorFecha = campoFecha.value;
+                            fecha = new Date(valorFecha);
+                            year = fecha.getFullYear();
+                            dia = fecha.getDate() + 1;
+                            if (dia == 32) {
+                                dia = 1
+                            }
+                            mes = fecha.getMonth() + 1;
+                        });
+                        campoFecha2.addEventListener('input', function() {
+                            valorFecha2 = campoFecha2.value;
+                            fecha2 = new Date(valorFecha2);
+                            year2 = fecha2.getFullYear();
+                            dia2 = fecha2.getDate() + 1;
+                            if (dia2 == 32) {
+                                dia2 = 1
+                            }
+                            mes2 = fecha2.getMonth() + 1;
+                        });
+                        
+                        var fechaActualizada = new Date(year, mes - 1, dia);
+                        var fechaActualizada2 = new Date(year2, mes2 - 1, dia2);
+                        //console.log("fecha1", fechaActualizada); 
+                        //console.log("fecha2", fechaActualizada2); 
+                        const diasEntreFechas = getDaysBetweenDates(fechaActualizada, fechaActualizada2);
+                        //console.log("fecha", diasEntreFechas); 
+                        ////console.log("fecha", valorFecha); 
+                        ////console.log("children", children)
+                        const lastChildText = JSON.stringify(children);
+                        const obj = JSON.parse(lastChildText);
+                        const temperaturaValues = [];
+                        const tiempoValues = [];
+                        for (const key in obj) {
+                            if (obj.hasOwnProperty(key)) {
+                                const temperatura = obj[key].temperatura;
+                                temperaturaValues.push(temperatura);
+                            }
+                        }
 
-                       ////console.log("fecha", valorFecha); 
-                       ////console.log("children", children)
-                       const lastChildText = JSON.stringify(children);
-                       const obj = JSON.parse(lastChildText);
-                       const temperaturaValues = [];
-                       const tiempoValues = [];
-                       for (const key in obj) {
-                           if (obj.hasOwnProperty(key)) {
-                               const temperatura = obj[key].temperatura;
-                               temperaturaValues.push(temperatura);
-                           }
-                       }
+                        for (const key in obj) {
+                            if (obj.hasOwnProperty(key)) {
+                                const tiempo = obj[key].tiempo;
+                                tiempoValues.push(tiempo);
+                            }
+                        }
 
-                       for (const key in obj) {
-                           if (obj.hasOwnProperty(key)) {
-                               const tiempo = obj[key].tiempo;
-                               tiempoValues.push(tiempo);
-                           }
-                       }
+                        ////console.log("tiempo", tiempoValues);
+                        const valuest = Object.values(tiempoValues);
+                        var puntos = [];
+                        var texto = "";
 
-                       ////console.log("tiempo", tiempoValues);
-                       const valuest = Object.values(tiempoValues);
-                       const posiciones = [];
+                       if (diasEntreFechas.length > 1) {
+                            texto = "Fecha";
+                            for (var i = 0; i < diasEntreFechas.length; i++) {
+                                var posiciones = [];
+                                //console.log(diasEntreFechas[i]);
+                                
+                                // Create a new Date object from the string
+                                const dateObj = new Date(diasEntreFechas[i]);
+                                //console.log("fecha", dateObj);
+                                // Get the day of the month (1-31)
+                                const d = dateObj.getDate();
+                                const m = dateObj.getMonth()+1;
+                                const y = dateObj.getFullYear();
 
-                       for (var i = 0; i < valuest.length; i++) {
-                           var hora = valuest[i].split(',');
-                           var horanew = hora[0].replace(/^\(/, '');
-                           var mesnew = hora[1].replace(/^\ /, '');
-                           var dianew = hora[2].replace(/^\ /, '');
-                           if(horanew == year.toString()){
-                               if(mesnew == mes.toString()){
-                                   if(dianew == dia.toString()){
-                                       posiciones.push(i);
-                                   }
-                               }
-                           }
-                       }
+                                //console.log(d);
+                                //console.log(m);
+                                //console.log(y);
 
-                       ////console.log("posiciones", posiciones);
-                       const elementost = valuest.slice(-10);
-                       ////console.log("tiempo", elementost);
-                       const values = Object.values(temperaturaValues);
-                       const elementos = values.slice(-10);
-                       ////console.log("temperatura", elementos);
-                       const listaDeEnteros = elementos.map(str => parseInt(str));
-                       const listaHoras = [];
-                       const listaMin = [];
-                       for (var i = 0; i < valuest.length; i++) {
-                           var hora = valuest[i].split(',');
-                           listaHoras.push(hora[3]);
-                           listaMin.push(hora[4]);
-                       }
-                       const listaHorasNew = listaHoras.map(str => parseInt(str));
-                       const listaMinNew = listaMin.map(str => parseInt(str));
-                       const puntos = [];
-                       ////console.log("Fechas:", listaHorasNew);
-                       ////console.log("Rangos:", temperaturaValues);
-                       var ejeTemperatura = []; 
-                       for (var i = 0; i < posiciones.length; i++) {
-                           ejeTemperatura.push(parseInt(temperaturaValues[posiciones[i]]));
-                           var minutosTotales = parseInt(listaHorasNew[posiciones[i]]) * 60 + parseInt(listaMinNew[posiciones[i]]);
-                           var minimoMinutos = Math.floor(minutosTotales / 60) * 60; // Redondear hacia abajo a la hora más cercana
-                           var maximoMinutos = minimoMinutos + 60; // Sumar 60 minutos para obtener la siguiente hora
+                                for (var j = 0; j < valuest.length; j++) {
+                                    var hora = valuest[j].split(',');
+                                    var horanew = hora[0].replace(/^\(/, '');
+                                    var mesnew = hora[1].replace(/^\ /, '');
+                                    var dianew = hora[2].replace(/^\ /, '');
+                                    if(horanew == y.toString()){
+                                        if(mesnew == m.toString()){
+                                            if(dianew == d.toString()){
+                                                posiciones.push(j);
+                                            }
+                                        }
+                                    }
+                                }
+                                var temperaturaLista = [];
+                                for (var k = 0; k < posiciones.length; k++) {
+                                    temperaturaLista.push(parseInt(temperaturaValues[posiciones[k]]));
+                                }
+                                //console.log(i,"-",temperaturaLista);
+                                var promedio = calcularPromedio(temperaturaLista);
+                                if (temperaturaLista.length === 0) {
+                                    //console.log("entro");
+                                    promedio = 0;
+                                }
+                                else {
+                                    //console.log(i, "-",Math.round(promedio));
+                                    let fechacompleta = new Date(y, m-1, d);
+                                    var fechacompletaformateada = fechacompleta.toISOString().slice(0, 10);
+                                    //console.log("fechacompleta",fechacompleta.toISOString().slice(0, 10));
+                                    var puntounico = [];
+                                    puntounico.push(fechacompletaformateada);
+                                    puntounico.push(Math.round(promedio));
 
-                           // Calcular el valor en la escala
-                           var valorEnEscalaLarge = ((minutosTotales - minimoMinutos) / (maximoMinutos - minimoMinutos));
-                           var valorEnEscala = Math.round(valorEnEscalaLarge * 100) / 100;
-                           ////console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
-                           const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(temperaturaValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
-                           //console.log("cada punto", punto);
-                           puntos.push(punto); // Agregar el punto a la lista de puntos
-                       }
-                       //console.log("puntos", puntos); // Imprimir los puntos resultantes
-                       var minimo = Math.min(...ejeTemperatura) - 1;
-                       var maximo = Math.max(...ejeTemperatura) + 1;
-                       //console.log("max", maximo);
-                       //console.log("min", minimo);
+                                    puntos.push(puntounico);
+                                }
+                                
+                                
+                            }
+                            //console.log(puntos);
+                        }
+                        else {
+                            texto="Tiempo (h)";
+                            //console.log ("entro");
+                            var posiciones = [];
+                            for (var i = 0; i < valuest.length; i++) {
+                                var hora = valuest[i].split(',');
+                                var horanew = hora[0].replace(/^\(/, '');
+                                var mesnew = hora[1].replace(/^\ /, '');
+                                var dianew = hora[2].replace(/^\ /, '');
+                                if(horanew == year.toString()){
+                                    if(mesnew == mes.toString()){
+                                        if(dianew == dia.toString()){
+                                            posiciones.push(i);
+                                        }
+                                    }
+                                }
+                            }
+
+                            ////console.log("posiciones", posiciones);
+                            const elementost = valuest.slice(-10);
+                            ////console.log("tiempo", elementost);
+                            const values = Object.values(temperaturaValues);
+                            const elementos = values.slice(-10);
+                            //console.log("temperatura", elementos);
+                            const listaDeEnteros = elementos.map(str => parseInt(str));
+                            const listaHoras = [];
+                            const listaMin = [];
+                            for (var i = 0; i < valuest.length; i++) {
+                                var hora = valuest[i].split(',');
+                                listaHoras.push(hora[3]);
+                                listaMin.push(hora[4]);
+                            }
+                            const listaHorasNew = listaHoras.map(str => parseInt(str));
+                            const listaMinNew = listaMin.map(str => parseInt(str));
+                            ////console.log("Fechas:", listaHorasNew);
+                            ////console.log("Rangos:", temperaturaValues);
+                            var ejeTemperatura = []; 
+                            for (var i = 0; i < posiciones.length; i++) {
+                                ejeTemperatura.push(parseInt(temperaturaValues[posiciones[i]]));
+                                var minutosTotales = parseInt(listaHorasNew[posiciones[i]]) * 60 + parseInt(listaMinNew[posiciones[i]]);
+                                var minimoMinutos = Math.floor(minutosTotales / 60) * 60; // Redondear hacia abajo a la hora más cercana
+                                var maximoMinutos = minimoMinutos + 60; // Sumar 60 minutos para obtener la siguiente hora
+
+                                // Calcular el valor en la escala
+                                var valorEnEscalaLarge = ((minutosTotales - minimoMinutos) / (maximoMinutos - minimoMinutos));
+                                var valorEnEscala = listaMinNew[posiciones[i]] / 100;
+                                ////console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
+                                const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(temperaturaValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
+                                //console.log("cada punto", punto);
+                                puntos.push(punto); // Agregar el punto a la lista de puntos
+                            }
+                            //console.log("puntos", puntos); // Imprimir los puntos resultantes
+                            var minimo = Math.min(...ejeTemperatura) - 1;
+                            var maximo = Math.max(...ejeTemperatura) + 1;
+                        }
+
+                       
                        var myConfig = {
                            "type": "line",
                            "scale-x": {
-                               "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
                                "label": {
                                "font-size": 14,
                                "offset-x": 0,
-                               "text": "Tiempo (h)",
+                               "text": texto,
                                "color": "#28B463"
                                },
                                "item": {
@@ -1103,7 +1316,7 @@
                            ////console.log("No data available");
                        }
                }).catch((error) => {
-                   console.error("Error getting data:", error);
+                   //console.error("Error getting data:", error);
                });
            }, 5000);
        }
@@ -1129,24 +1342,58 @@
                     if (snapshot.exists()) {
                         const children = snapshot.val();
                         const campoFecha = document.getElementById('start');
+                        const campoFecha2 = document.getElementById('start1');
                         var valorFecha = campoFecha.value;
                         var fecha = new Date(valorFecha);
+                        
                         var dia = fecha.getDate() +1;
                         var mes = fecha.getMonth() + 1;
+                        if (dia == 32) {
+                            dia = 1
+                            mes= mes + 1;
+                        }
+                        
                         var year = fecha.getFullYear();
+                        //console.log(dia, mes, year);
+                        var valorFecha2 = campoFecha2.value;
+                        var fecha2 = new Date(valorFecha2);
+                        
+                        var dia2 = fecha2.getDate() + 1;
+                        var mes2 = fecha2.getMonth() + 1;
+                        if (dia2 == 32) {
+                            dia2 = 1
+                            mes2 = mes2 + 1;
+                        }
+                        
+                        var year2 = fecha2.getFullYear();
+                        //console.log(dia2, mes2, year2);
                         campoFecha.addEventListener('input', function() {
                             valorFecha = campoFecha.value;
                             fecha = new Date(valorFecha);
                             year = fecha.getFullYear();
                             dia = fecha.getDate() + 1;
+                            if (dia == 32) {
+                                dia = 1
+                            }
                             mes = fecha.getMonth() + 1;
-                            ////console.log("Día: ", dia);
-                            ////console.log("Mes: ", mes);
-                            ////console.log("Año: ", year);
                         });
+                        campoFecha2.addEventListener('input', function() {
+                            valorFecha2 = campoFecha2.value;
+                            fecha2 = new Date(valorFecha2);
+                            year2 = fecha2.getFullYear();
+                            dia2 = fecha2.getDate() + 1;
+                            if (dia2 == 32) {
+                                dia2 = 1
+                            }
+                            mes2 = fecha2.getMonth() + 1;
+                        });
+                        var fechaActualizada = new Date(year, mes - 1, dia);
+                        var fechaActualizada2 = new Date(year2, mes2 - 1, dia2);
+                        //console.log("fecha1", fechaActualizada); 
+                        //console.log("fecha2", fechaActualizada2); 
+                        const diasEntreFechas = getDaysBetweenDates(fechaActualizada, fechaActualizada2);
+                        //console.log("fecha", diasEntreFechas); 
 
-                        ////console.log("fecha", valorFecha); 
-                        ////console.log("children", children)
                         const lastChildText = JSON.stringify(children);
                         const obj = JSON.parse(lastChildText);
                         const humedadValues = [];
@@ -1164,74 +1411,141 @@
                                 tiempoValues.push(tiempo);
                             }
                         }
-
+                        
                         ////console.log("tiempo", tiempoValues);
                         const valuest = Object.values(tiempoValues);
-                        const posiciones = [];
+                        var puntos = [];
+                        var texto = "";
+                        if (diasEntreFechas.length > 1) {
+                            texto = "Fecha";
+                            for (var i = 0; i < diasEntreFechas.length; i++) {
+                                var posiciones = [];
+                                //console.log(diasEntreFechas[i]);
+                                
+                                // Create a new Date object from the string
+                                const dateObj = new Date(diasEntreFechas[i]);
+                                //console.log("fecha", dateObj);
+                                // Get the day of the month (1-31)
+                                const d = dateObj.getDate();
+                                const m = dateObj.getMonth()+1;
+                                const y = dateObj.getFullYear();
 
-                        for (var i = 0; i < valuest.length; i++) {
-                            var hora = valuest[i].split(',');
-                            var horanew = hora[0].replace(/^\(/, '');
-                            var mesnew = hora[1].replace(/^\ /, '');
-                            var dianew = hora[2].replace(/^\ /, '');
-                            if(horanew == year.toString()){
-                                if(mesnew == mes.toString()){
-                                    if(dianew == dia.toString()){
-                                        posiciones.push(i);
+                                //console.log(d);
+                                //console.log(m);
+                                //console.log(y);
+
+                                for (var j = 0; j < valuest.length; j++) {
+                                    var hora = valuest[j].split(',');
+                                    var horanew = hora[0].replace(/^\(/, '');
+                                    var mesnew = hora[1].replace(/^\ /, '');
+                                    var dianew = hora[2].replace(/^\ /, '');
+                                    if(horanew == y.toString()){
+                                        if(mesnew == m.toString()){
+                                            if(dianew == d.toString()){
+                                                posiciones.push(j);
+                                            }
+                                        }
+                                    }
+                                }
+                                var humedadLista = [];
+                                for (var k = 0; k < posiciones.length; k++) {
+                                    humedadLista.push(parseInt(humedadValues[posiciones[k]]));
+                                }
+                                //console.log(i,"-",humedadLista);
+                                var promedio = calcularPromedio(humedadLista);
+                                if (humedadLista.length === 0) {
+                                    //console.log("entro");
+                                    promedio = 0;
+                                    //console.log(i, "-",Math.round(promedio));
+                                    //let fechacompleta = new Date(y, m-1, d);
+                                    //var fechacompletaformateada = fechacompleta.toISOString().slice(0, 10);
+                                    //console.log("fechacompleta",fechacompleta.toISOString().slice(0, 10));
+                                    //var puntounico = [];
+                                    //puntounico.push(fechacompletaformateada);
+                                    //puntounico.push(Math.round(promedio));
+
+                                    //puntos.push(puntounico);
+                                }
+                                else {
+                                    //console.log(i, "-",Math.round(promedio));
+                                    let fechacompleta = new Date(y, m-1, d);
+                                    var fechacompletaformateada = fechacompleta.toISOString().slice(0, 10);
+                                    //console.log("fechacompleta",fechacompleta.toISOString().slice(0, 10));
+                                    var puntounico = [];
+                                    puntounico.push(fechacompletaformateada);
+                                    puntounico.push(Math.round(promedio));
+
+                                    puntos.push(puntounico);
+                                }
+                                
+                                
+                            }
+                            //console.log(puntos);
+                        }
+                        else {
+                            texto="Tiempo (h)";
+                            //console.log ("entro");
+                            var posiciones = [];
+                            for (var i = 0; i < valuest.length; i++) {
+                                var hora = valuest[i].split(',');
+                                var horanew = hora[0].replace(/^\(/, '');
+                                var mesnew = hora[1].replace(/^\ /, '');
+                                var dianew = hora[2].replace(/^\ /, '');
+                                if(horanew == year.toString()){
+                                    if(mesnew == mes.toString()){
+                                        if(dianew == dia.toString()){
+                                            posiciones.push(i);
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        ////console.log("posiciones", posiciones);
-                        const elementost = valuest.slice(-10);
-                        ////console.log("tiempo", elementost);
-                        const values = Object.values(humedadValues);
-                        const elementos = values.slice(-10);
-                        ////console.log("humedad", elementos);
-                        const listaDeEnteros = elementos.map(str => parseInt(str));
-                        const listaHoras = [];
-                        const listaMin = [];
-                        for (var i = 0; i < valuest.length; i++) {
-                            var hora = valuest[i].split(',');
-                            listaHoras.push(hora[3]);
-                            listaMin.push(hora[4]);
-                        }
-                        const listaHorasNew = listaHoras.map(str => parseInt(str));
-                        const listaMinNew = listaMin.map(str => parseInt(str));
-                        const puntos = [];
-                        ////console.log("Fechas:", listaHorasNew);
-                        ////console.log("Rangos:", humedadValues);
-                        var ejeHumedad = []; 
-                        for (var i = 0; i < posiciones.length; i++) {
-                            ejeHumedad.push(parseInt(humedadValues[posiciones[i]]));
-                            var minutosTotales = parseInt(listaHorasNew[posiciones[i]]) * 60 + parseInt(listaMinNew[posiciones[i]]);
-                            var minimoMinutos = Math.floor(minutosTotales / 60) * 60; // Redondear hacia abajo a la hora más cercana
-                            var maximoMinutos = minimoMinutos + 60; // Sumar 60 minutos para obtener la siguiente hora
+                            //console.log("posicionesh", posiciones);
+                            const elementost = valuest.slice(-10);
+                            //console.log("tiempoh", elementost);
+                            const values = Object.values(humedadValues);
+                            const elementos = values.slice(-10);
+                            //console.log("humedadh", elementos);
+                            const listaDeEnteros = elementos.map(str => parseInt(str));
+                            const listaHoras = [];
+                            const listaMin = [];
+                            for (var i = 0; i < valuest.length; i++) {
+                                var hora = valuest[i].split(',');
+                                listaHoras.push(hora[3]);
+                                listaMin.push(hora[4]);
+                            }
+                            const listaHorasNew = listaHoras.map(str => parseInt(str));
+                            const listaMinNew = listaMin.map(str => parseInt(str));
+                            ////console.log("Fechas:", listaHorasNew);
+                            ////console.log("Rangos:", humedadValues);
+                            var ejeHumedad = []; 
+                            for (var i = 0; i < posiciones.length; i++) {
+                                ejeHumedad.push(parseInt(humedadValues[posiciones[i]]));
+                                var minutosTotales = parseInt(listaHorasNew[posiciones[i]]) * 60 + parseInt(listaMinNew[posiciones[i]]);
+                                var minimoMinutos = Math.floor(minutosTotales / 60) * 60; // Redondear hacia abajo a la hora más cercana
+                                var maximoMinutos = minimoMinutos + 60; // Sumar 60 minutos para obtener la siguiente hora
 
-                            var valorEnEscalaLarge = ((minutosTotales - minimoMinutos) / (maximoMinutos - minimoMinutos));
-                            var valorEnEscala = listaMinNew[posiciones[i]] / 100;
-                            //console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
-                            const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(humedadValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
-                            ////console.log("cada punto", punto);
-                            puntos.push(punto); // Agregar el punto a la lista de puntos
+                                var valorEnEscalaLarge = ((minutosTotales - minimoMinutos) / (maximoMinutos - minimoMinutos));
+                                var valorEnEscala = listaMinNew[posiciones[i]] / 100;
+                                //console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
+                                const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(humedadValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
+                                ////console.log("cada punto", punto);
+                                puntos.push(punto); // Agregar el punto a la lista de puntos
+                            }
+                            //console.log("puntos", puntos); // Imprimir los puntos resultantes
+                            var minimo = Math.min(...ejeHumedad) - 1;
+                            var maximo = Math.max(...ejeHumedad) + 1;
                         }
-                        console.log("puntos", puntos); // Imprimir los puntos resultantes
-                        var minimo = Math.min(...ejeHumedad) - 1;
-                        var maximo = Math.max(...ejeHumedad) + 1;
-                        //console.log("max", maximo);
-                        //console.log("min", minimo);
+                        //console.log("puntos", puntos);
 
                         var myConfig = {
                             "type": "line",
                             "scale-x": {
-                                "min-value": 0,
-                                "max-value": 24,
                                 "label": {
                                 "font-size": 14,
                                 "offset-x": 0,
-                                "text": "Tiempo (h)",
-                                "color": "#2E86C1"
+                                "text": texto,
+                                "color": "#C93C20"
                                 },
                                 "item": {
                                 "font-size": 10
@@ -1242,13 +1556,11 @@
                                 }
                             },
                             "scale-y": {
-                                "min-value": minimo,
-                                "max-value": maximo,
                                 "label": {
                                 "font-size": 14,
                                 "offset-x": 0,
                                 "text": "Humedad del suelo (%)",
-                                "color": "#2E86C1"
+                                "color": "#C93C20"
                                 },
                                 "item": {
                                 "font-size": 10
@@ -1267,12 +1579,12 @@
                             },
                             "series": [{
                                     "values": puntos,
-                                    "line-color": "#3498DB",
+                                    "line-color": "#C93C20",
                                     "line-width": 5,
                                     "marker": {
-                                    "background-color": "#2E86C1",
+                                    "background-color": "#C93C20",
                                     "size": 5,
-                                    "border-color": "#2E86C1",
+                                    "border-color": "#C93C20",
                                 },
                             }]
                             };
@@ -1286,7 +1598,7 @@
                             //console.log("No data available");
                         }
                 }).catch((error) => {
-                    console.error("Error getting data:", error);
+                    //console.error("Error getting data:", error);
                 });
             }, 5000);
         }
@@ -1312,27 +1624,66 @@
                     if (snapshot.exists()) {
                         const children = snapshot.val();
                         const campoFecha = document.getElementById('start');
+                        const campoFecha2 = document.getElementById('start1');
                         var valorFecha = campoFecha.value;
                         var fecha = new Date(valorFecha);
+                        
                         var dia = fecha.getDate() +1;
                         var mes = fecha.getMonth() + 1;
+                        if (dia == 32) {
+                            dia = 1
+                            mes= mes + 1;
+                        }
+                        
                         var year = fecha.getFullYear();
+                        //console.log(dia, mes, year);
+                        var valorFecha2 = campoFecha2.value;
+                        var fecha2 = new Date(valorFecha2);
+                        
+                        var dia2 = fecha2.getDate() + 1;
+                        var mes2 = fecha2.getMonth() + 1;
+                        if (dia2 == 32) {
+                            dia2 = 1
+                            mes2 = mes2 + 1;
+                        }
+                        
+                        var year2 = fecha2.getFullYear();
+                        //console.log(dia2, mes2, year2);
                         campoFecha.addEventListener('input', function() {
                             valorFecha = campoFecha.value;
                             fecha = new Date(valorFecha);
                             year = fecha.getFullYear();
                             dia = fecha.getDate() + 1;
-                            mes = fecha.getMonth() + 1;            
+                            if (dia == 32) {
+                                dia = 1
+                            }
+                            mes = fecha.getMonth() + 1;
                         });
-                        console.log("Día: ", dia);
-                        console.log("Mes: ", mes);
-                        console.log("Año: ", year);
+                        campoFecha2.addEventListener('input', function() {
+                            valorFecha2 = campoFecha2.value;
+                            fecha2 = new Date(valorFecha2);
+                            year2 = fecha2.getFullYear();
+                            dia2 = fecha2.getDate() + 1;
+                            if (dia2 == 32) {
+                                dia2 = 1
+                            }
+                            mes2 = fecha2.getMonth() + 1;
+                        });
+                        
+                        var fechaActualizada = new Date(year, mes - 1, dia);
+                        var fechaActualizada2 = new Date(year2, mes2 - 1, dia2);
+                        //console.log("fecha1", fechaActualizada); 
+                        //console.log("fecha2", fechaActualizada2); 
+                        const diasEntreFechas = getDaysBetweenDates(fechaActualizada, fechaActualizada2);
+                        //console.log("fecha", diasEntreFechas); 
                         ////console.log("fecha", valorFecha); 
                         ////console.log("children", children)
+
                         const lastChildText = JSON.stringify(children);
                         const obj = JSON.parse(lastChildText);
                         const luzValues = [];
                         const tiempoValues = [];
+
                         for (const key in obj) {
                             if (obj.hasOwnProperty(key)) {
                                 const luz = obj[key].deteccion;
@@ -1347,37 +1698,89 @@
                             }
                         }
 
-                        console.log("tiempo", tiempoValues);
+                        //console.log("tiempo", tiempoValues);
                         const valuest = Object.values(tiempoValues);
-                        console.log("tiempo2", valuest);
-                        const posiciones = [];
 
-                        for (var i = 0; i < valuest.length; i++) {
-                            var hora = valuest[i].split(',');
-                            var horanew = hora[0].replace(/^\(/, '');
-                            var mesnew = hora[1].replace(/^\ /, '');
-                            var dianew = hora[2].replace(/^\ /, '');
-                            if(horanew == year.toString()){
-                                if(mesnew == mes.toString()){
-                                    if(dianew == dia.toString()){
-                                        posiciones.push(i);
+                        if (diasEntreFechas.length > 1) {
+                            texto = "Fecha";
+                            var contadorLuz = 0;
+                            
+                            for (var i = 0; i < diasEntreFechas.length; i++) {
+                                var posiciones = [];
+                                //console.log(diasEntreFechas[i]);
+                                
+                                // Create a new Date object from the string
+                                const dateObj = new Date(diasEntreFechas[i]);
+                                //console.log("fecha", dateObj);
+                                // Get the day of the month (1-31)
+                                const d = dateObj.getDate();
+                                const m = dateObj.getMonth()+1;
+                                const y = dateObj.getFullYear();
+
+                                //console.log(d);
+                                //console.log(m);
+                                //console.log(y);
+
+                                for (var j = 0; j < valuest.length; j++) {
+                                    var hora = valuest[j].split(',');
+                                    var horanew = hora[0].replace(/^\(/, '');
+                                    var mesnew = hora[1].replace(/^\ /, '');
+                                    var dianew = hora[2].replace(/^\ /, '');
+                                    if(horanew == y.toString()){
+                                        if(mesnew == m.toString()){
+                                            if(dianew == d.toString()){
+                                                posiciones.push(j);
+                                            }
+                                        }
+                                    }
+                                }
+                               
+                                const values = Object.values(luzValues);
+                                
+                                //console.log("luz", values);
+                                var valores = [];
+                                for (var k = 0; k < posiciones.length; k++) {
+                                    var nuevo = "Esta recibiendo Luz Directa";
+                                    console.log("'",nuevo,"'.'",luzValues[posiciones[i]],"'");
+                                    if ("Esta recibiendo Luz Directa" === luzValues[posiciones[k]]) {
+                                        contadorLuz = contadorLuz + 20;
+                                    }
+                                    valores.push(luzValues[posiciones[k]]);
+                                }
+                                
+                                
+                            }
+                            console.log("posicionesluz", posiciones);
+                        }
+                        else {
+                            var posiciones = [];
+                            for (var i = 0; i < valuest.length; i++) {
+                                var hora = valuest[i].split(',');
+                                var horanew = hora[0].replace(/^\(/, '');
+                                var mesnew = hora[1].replace(/^\ /, '');
+                                var dianew = hora[2].replace(/^\ /, '');
+                                if(horanew == year.toString()){
+                                    if(mesnew == mes.toString()){
+                                        if(dianew == dia.toString()){
+                                            posiciones.push(i);
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        console.log("posiciones", posiciones);
-                        const values = Object.values(luzValues);
-                        var contadorLuz = 0;
-                        console.log("luz", values);
-                        var valores = [];
-                        for (var i = 0; i < posiciones.length; i++) {
-                            var nuevo = "Esta recibiendo Luz Directa";
-                            console.log("'",nuevo,"'.'",luzValues[posiciones[i]],"'");
-                            if ("Esta recibiendo Luz Directa" === luzValues[posiciones[i]]) {
-                                contadorLuz = contadorLuz + 20;
+                            console.log("posicionesluz", posiciones);
+                            const values = Object.values(luzValues);
+                            var contadorLuz = 0;
+                            //console.log("luz", values);
+                            var valores = [];
+                            for (var i = 0; i < posiciones.length; i++) {
+                                var nuevo = "Esta recibiendo Luz Directa";
+                                console.log("'",nuevo,"'.'",luzValues[posiciones[i]],"'");
+                                if ("Esta recibiendo Luz Directa" === luzValues[posiciones[i]]) {
+                                    contadorLuz = contadorLuz + 20;
+                                }
+                                valores.push(luzValues[posiciones[i]]);
                             }
-                            valores.push(luzValues[posiciones[i]]);
                         }
                         var app_humedad = document.getElementById('verview-shart-luz');
                         var jsonLuz = JSON.stringify(contadorLuz + " minutos de luz directa recibida");
@@ -1399,10 +1802,10 @@
                         app_humedad.style.marginBottom = '20px';
 
                     } else {
-                        console.log("No data available");
+                        //console.log("No data available");
                     }
                 }).catch((error) => {
-                    console.error("Error getting data:", error);
+                    //console.error("Error getting data:", error);
                 });
             }, 5000);
         }
@@ -1410,13 +1813,56 @@
     <script>
         // Obtener la fecha actual
         const fechaActual = new Date();
-        const diaActual = fechaActual.getDate();
-        const fechaActualISO = fechaActual.toISOString().split('T')[0];
-      
+
+        // Obtener el año
+        const year = fechaActual.getFullYear();
+
+        // Obtener el mes (0-11, donde 0 es enero)
+        const month = fechaActual.getMonth() + 1; // Sumamos 1 para obtener el mes real (1-12)
+
+        // Obtener el día
+        const day = fechaActual.getDate();
+
+        // Obtener la fecha completa en formato YYYY-MM-DD
+        const fechaISO = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
         // Establecer el valor máximo y el valor actual del campo de entrada de fecha
         const campoFecha = document.getElementById('start');
-        campoFecha.max = fechaActualISO;
-        campoFecha.value = fechaActualISO;
+        const campoFecha1 = document.getElementById('start1');
+        campoFecha.max = fechaISO;
+        campoFecha.value = fechaISO;
+        campoFecha1.max = fechaISO;
+        campoFecha1.value = fechaISO;
+        //console.log(fechaISO);
+        // Agregar el listener de evento para el campo "start"
+        campoFecha.addEventListener('change', () => {
+            // Obtener las fechas seleccionadas
+            const startDate = new Date(campoFecha.value);
+            const start1Date = new Date(campoFecha1.value);
+
+            // Comparar las fechas y mostrar la advertencia si es necesario
+            if (startDate > start1Date) {
+                alert('La fecha de inicio del viaje no puede ser mayor que la fecha de inicio 1.');
+                campoFecha.max = fechaISO;
+                campoFecha.value = fechaISO;
+                campoFecha1.max = fechaISO;
+                campoFecha1.value = fechaISO;
+            }
+        });
+        campoFecha1.addEventListener('change', () => {
+            // Obtener las fechas seleccionadas
+            const startDate = new Date(campoFecha.value);
+            const start1Date = new Date(campoFecha1.value);
+
+            // Comparar las fechas y mostrar la advertencia si es necesario
+            if (startDate > start1Date) {
+                alert('La fecha de inicio del viaje no puede ser mayor que la fecha de inicio 1.');
+                campoFecha.max = fechaISO;
+                campoFecha.value = fechaISO;
+                campoFecha1.max = fechaISO;
+                campoFecha1.value = fechaISO;
+            }
+        });
       </script>
       <script>
         function toggleContent(selectedValue) {
