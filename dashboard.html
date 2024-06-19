@@ -233,15 +233,15 @@
                                 <div id="verview-shart-hs" style="display: none;"></div>
                                 <h5 class="header-title mb-0"><div id="verview-shart-luz" style="display: none;">
                                 </div></h5>
-                                <div id="valor-max" style="display: block;"></div>
-                                <div id="valor-min" style="display: block;"></div>
-                                <div id="valor-promedio" style="display: block;"></div>
-                                <div id="valor-maxt" style="display: none;"></div>
-                                <div id="valor-mint" style="display: none;"></div>
-                                <div id="valor-promediot" style="display: none;"></div>
-                                <div id="valor-maxhs" style="display: none;"></div>
-                                <div id="valor-minhs" style="display: none;"></div>
-                                <div id="valor-promediohs" style="display: none;"></div>
+                                <div id="valor-max" style="display: inline;  font-weight: bold; margin-right: 70px;"></div>
+                                <div id="valor-min" style="display: inline;  font-weight: bold; margin-right: 70px;"></div>
+                                <div id="valor-promedio" style="display: inline;  font-weight: bold; margin-right: 70px;"></div>
+                                <div id="valor-maxt" style="display: none;  font-weight: bold; margin-right: 70px;"></div>
+                                <div id="valor-mint" style="display: none;  font-weight: bold; margin-right: 70px;"></div>
+                                <div id="valor-promediot" style="display: none;  font-weight: bold; margin-right: 70px;"></div>
+                                <div id="valor-maxhs" style="display: none;  font-weight: bold; margin-right: 70px;"></div>
+                                <div id="valor-minhs" style="display: none;  font-weight: bold; margin-right: 70px;"></div>
+                                <div id="valor-promediohs" style="display: none;  font-weight: bold; margin-right: 70px;"></div>
                                 <hr>
                                 <div class="d-flex justify-content-center align-items-center">
                                     <h4 class="header-title mb-0">Mensajes de enlace</h4>
@@ -1058,9 +1058,9 @@
                         var maximum = document.getElementById("valor-max");
                         var minimum = document.getElementById("valor-min");
                         var average = document.getElementById("valor-promedio");
-                        const maximumNuevo = JSON.stringify("Valor máximo: " + Math.round(numMax));
-                        const minimumNuevo = JSON.stringify("Valor mínimo: " + Math.round(numMin));
-                        const averageNuevo = JSON.stringify("Promedio: " + parseFloat(numPromedio.toFixed(2)));
+                        const maximumNuevo = JSON.stringify("Valor máximo: " + Math.round(numMax) + " %");
+                        const minimumNuevo = JSON.stringify("Valor mínimo: " + Math.round(numMin) + " %");
+                        const averageNuevo = JSON.stringify("Promedio: " + parseFloat(numPromedio.toFixed(2)) + " %");
                         maximum.innerText = maximumNuevo.replace(/"/g, "");
                         minimum.innerText = minimumNuevo.replace(/"/g, "");
                         average.innerText = averageNuevo.replace(/"/g, "");
@@ -1313,9 +1313,9 @@
                         var maximumt = document.getElementById("valor-maxt");
                         var minimumt = document.getElementById("valor-mint");
                         var averaget = document.getElementById("valor-promediot");
-                        const maximumNuevot = JSON.stringify("Valor máximo: " + Math.round(numMaxt));
-                        const minimumNuevot = JSON.stringify("Valor mínimo: " + Math.round(numMint));
-                        const averageNuevot = JSON.stringify("Promedio: " + parseFloat(numPromediot.toFixed(2)));
+                        const maximumNuevot = JSON.stringify("Valor máximo: " + Math.round(numMaxt) + " °C");
+                        const minimumNuevot = JSON.stringify("Valor mínimo: " + Math.round(numMint) + " °C");
+                        const averageNuevot = JSON.stringify("Promedio: " + parseFloat(numPromediot.toFixed(2)) + " °C");
                         maximumt.innerText = maximumNuevot.replace(/"/g, "");
                         minimumt.innerText = minimumNuevot.replace(/"/g, "");
                         averaget.innerText = averageNuevot.replace(/"/g, "");
@@ -1612,9 +1612,9 @@
                         var maximumhs = document.getElementById("valor-maxhs");
                         var minimumhs = document.getElementById("valor-minhs");
                         var averagehs = document.getElementById("valor-promediohs");
-                        const maximumNuevohs = JSON.stringify("Valor máximo: " + Math.round(numMaxhs));
-                        const minimumNuevohs = JSON.stringify("Valor mínimo: " + Math.round(numMinhs));
-                        const averageNuevohs = JSON.stringify("Promedio: " + parseFloat(numPromediohs.toFixed(2)));
+                        const maximumNuevohs = JSON.stringify("Valor máximo: " + Math.round(numMaxhs) + " %");
+                        const minimumNuevohs = JSON.stringify("Valor mínimo: " + Math.round(numMinhs) + " %");
+                        const averageNuevohs = JSON.stringify("Promedio: " + parseFloat(numPromediohs.toFixed(2)) + " %");
                         maximumhs.innerText = maximumNuevohs.replace(/"/g, "");
                         minimumhs.innerText = minimumNuevohs.replace(/"/g, "");
                         averagehs.innerText = averageNuevohs.replace(/"/g, "");
@@ -1967,9 +1967,9 @@
                 contenidoHumedad.style.display = "block";
                 contenidoHSuelo.style.display = "none";
                 contenidoTemperatura.style.display = "none";
-                valor_minimo.style.display = "block";
-                valor_maximo.style.display = "block";
-                valor_promedio.style.display = "block";
+                valor_minimo.style.display = "inline";
+                valor_maximo.style.display = "inline";
+                valor_promedio.style.display = "inline";
                 valor_minimot.style.display = "none";
                 valor_maximot.style.display = "none";
                 valor_promediot.style.display = "none";
@@ -1984,9 +1984,9 @@
                 valor_minimo.style.display = "none";
                 valor_maximo.style.display = "none";
                 valor_promedio.style.display = "none";
-                valor_minimot.style.display = "block";
-                valor_maximot.style.display = "block";
-                valor_promediot.style.display = "block";
+                valor_minimot.style.display = "inline";
+                valor_maximot.style.display = "inline";
+                valor_promediot.style.display = "inline";
                 valor_minimohs.style.display = "none";
                 valor_maximohs.style.display = "none";
                 valor_promediohs.style.display = "none";
@@ -2002,9 +2002,9 @@
                 valor_minimot.style.display = "none";
                 valor_maximot.style.display = "none";
                 valor_promediot.style.display = "none";
-                valor_minimohs.style.display = "block";
-                valor_maximohs.style.display = "block";
-                valor_promediohs.style.display = "block";
+                valor_minimohs.style.display = "inline";
+                valor_maximohs.style.display = "inline";
+                valor_promediohs.style.display = "inline";
             }
             else if (selectedValue === "3") {
                 contenidoLuz.style.display = "block";
