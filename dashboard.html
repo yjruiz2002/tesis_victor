@@ -218,7 +218,7 @@
                                     <select class="custome-select border-0 pr-3" onchange="toggleContent(this.value)">
                                         <option value="0" selected id="opc-humedad">Humedad del ambiente</option>
                                         <option value="1" id="opc-temperatura">Temperatura</option>
-                                         <option value="2" id="opc-humedad-suelo">Humedad del suelo</option>
+                                        <option value="2" id="opc-humedad-suelo">Humedad del suelo</option>
                                         <option value="3" id="opc-luz">Luminosidad</option>
                                     </select>
                                 </div>
@@ -233,6 +233,15 @@
                                 <div id="verview-shart-hs" style="display: none;"></div>
                                 <h5 class="header-title mb-0"><div id="verview-shart-luz" style="display: none;">
                                 </div></h5>
+                                <div id="valor-max" style="display: block;"></div>
+                                <div id="valor-min" style="display: block;"></div>
+                                <div id="valor-promedio" style="display: block;"></div>
+                                <div id="valor-maxt" style="display: none;"></div>
+                                <div id="valor-mint" style="display: none;"></div>
+                                <div id="valor-promediot" style="display: none;"></div>
+                                <div id="valor-maxhs" style="display: none;"></div>
+                                <div id="valor-minhs" style="display: none;"></div>
+                                <div id="valor-promediohs" style="display: none;"></div>
                                 <hr>
                                 <div class="d-flex justify-content-center align-items-center">
                                     <h4 class="header-title mb-0">Mensajes de enlace</h4>
@@ -473,6 +482,26 @@
             }
             const promedio = suma / lista.length;
             return promedio;
+        }
+
+        function findMax(lista) {
+            let max = lista[0];
+            for (const num of lista) {
+                if (num > max) {
+                max = num;
+                }
+            }
+            return max;
+        }
+
+        function findMin(lista) {
+            let min = lista[0];
+            for (const num of lista) {
+                if (num < min) {
+                min = num;
+                }
+            }
+            return min;
         }
 
         const humedadelements = [];
@@ -846,6 +875,10 @@
                         const valuest = Object.values(tiempoValues);
                         var puntos = [];
                         var texto = "";
+                        var listaCalcularPromedio = [];
+                        var numPromedio = 0;
+                        var numMax = 0;
+                        var numMin = 0;
                         if (diasEntreFechas.length > 1) {
                             texto = "Fecha";
                             for (var i = 0; i < diasEntreFechas.length; i++) {
@@ -883,18 +916,9 @@
                                 }
                                 //console.log(i,"-",humedadLista);
                                 var promedio = calcularPromedio(humedadLista);
+                                listaCalcularPromedio.push(promedio);
                                 if (humedadLista.length === 0) {
-                                    //console.log("entro");
                                     promedio = 0;
-                                    //console.log(i, "-",Math.round(promedio));
-                                    //let fechacompleta = new Date(y, m-1, d);
-                                    //var fechacompletaformateada = fechacompleta.toISOString().slice(0, 10);
-                                    //console.log("fechacompleta",fechacompleta.toISOString().slice(0, 10));
-                                    //var puntounico = [];
-                                    //puntounico.push(fechacompletaformateada);
-                                    //puntounico.push(Math.round(promedio));
-
-                                    //puntos.push(puntounico);
                                 }
                                 else {
                                     //console.log(i, "-",Math.round(promedio));
@@ -910,7 +934,12 @@
                                 
                                 
                             }
-                            //console.log(puntos);
+                            if(listaCalcularPromedio.length !== 0){
+                                numPromedio = calcularPromedio(listaCalcularPromedio);
+                                numMax = findMax(listaCalcularPromedio);
+                                numMin = findMin(listaCalcularPromedio);
+                            }
+                            
                         }
                         else {
                             texto="Tiempo (h)";
@@ -959,12 +988,18 @@
                                 var valorEnEscala = listaMinNew[posiciones[i]] / 100;
                                 //console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
                                 const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(humedadValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
+                                listaCalcularPromedio.push(parseInt(humedadValues[posiciones[i]]));
                                 ////console.log("cada punto", punto);
                                 puntos.push(punto); // Agregar el punto a la lista de puntos
                             }
                             //console.log("puntos", puntos); // Imprimir los puntos resultantes
                             var minimo = Math.min(...ejeHumedad) - 1;
                             var maximo = Math.max(...ejeHumedad) + 1;
+                            if(listaCalcularPromedio.length !== 0){
+                                numPromedio = calcularPromedio(listaCalcularPromedio);
+                                numMax = findMax(listaCalcularPromedio);
+                                numMin = findMin(listaCalcularPromedio);
+                            }
                         }
                         //console.log("puntos", puntos);
                         var myConfig = {
@@ -1023,9 +1058,19 @@
                             height: "100%",
                             width: "100%"
                             });
+                            
                         } else {
                             ////console.log("No data available");
                         }
+                        var maximum = document.getElementById("valor-max");
+                        var minimum = document.getElementById("valor-min");
+                        var average = document.getElementById("valor-promedio");
+                        const maximumNuevo = JSON.stringify("Valor máximo: " + Math.round(numMax));
+                        const minimumNuevo = JSON.stringify("Valor mínimo: " + Math.round(numMin));
+                        const averageNuevo = JSON.stringify("Promedio: " + parseFloat(numPromedio.toFixed(2)));
+                        maximum.innerText = maximumNuevo.replace(/"/g, "");
+                        minimum.innerText = minimumNuevo.replace(/"/g, "");
+                        average.innerText = averageNuevo.replace(/"/g, "");
                 }).catch((error) => {
                     //console.error("Error getting data:", error);
                 });
@@ -1138,7 +1183,10 @@
                         const valuest = Object.values(tiempoValues);
                         var puntos = [];
                         var texto = "";
-
+                        var listaCalcularPromediot = [];
+                        var numPromediot = 0;
+                        var numMaxt = 0;
+                        var numMint = 0;
                        if (diasEntreFechas.length > 1) {
                             texto = "Fecha";
                             for (var i = 0; i < diasEntreFechas.length; i++) {
@@ -1176,6 +1224,7 @@
                                 }
                                 //console.log(i,"-",temperaturaLista);
                                 var promedio = calcularPromedio(temperaturaLista);
+                                listaCalcularPromediot.push(promedio);
                                 if (temperaturaLista.length === 0) {
                                     //console.log("entro");
                                     promedio = 0;
@@ -1194,7 +1243,11 @@
                                 
                                 
                             }
-                            //console.log(puntos);
+                            if(listaCalcularPromediot.length !== 0){
+                                numPromediot = calcularPromedio(listaCalcularPromediot);
+                                numMaxt = findMax(listaCalcularPromediot);
+                                numMint = findMin(listaCalcularPromediot);
+                            }
                         }
                         else {
                             texto="Tiempo (h)";
@@ -1245,14 +1298,30 @@
                                 ////console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
                                 const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(temperaturaValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
                                 //console.log("cada punto", punto);
+                                listaCalcularPromediot.push(parseInt(temperaturaValues[posiciones[i]]));
                                 puntos.push(punto); // Agregar el punto a la lista de puntos
                             }
                             //console.log("puntos", puntos); // Imprimir los puntos resultantes
                             var minimo = Math.min(...ejeTemperatura) - 1;
                             var maximo = Math.max(...ejeTemperatura) + 1;
+                            if(listaCalcularPromediot.length !== 0){
+                                numPromediot = calcularPromedio(listaCalcularPromediot);
+                                numMaxt = findMax(listaCalcularPromediot);
+                                numMint = findMin(listaCalcularPromediot);
+                            }
                         }
-
-                       
+                        console.log(numPromediot);
+                        console.log(numMaxt); 
+                        console.log(numMint); 
+                        var maximumt = document.getElementById("valor-maxt");
+                        var minimumt = document.getElementById("valor-mint");
+                        var averaget = document.getElementById("valor-promediot");
+                        const maximumNuevot = JSON.stringify("Valor máximo: " + Math.round(numMaxt));
+                        const minimumNuevot = JSON.stringify("Valor mínimo: " + Math.round(numMint));
+                        const averageNuevot = JSON.stringify("Promedio: " + parseFloat(numPromediot.toFixed(2)));
+                        maximumt.innerText = maximumNuevot.replace(/"/g, "");
+                        minimumt.innerText = minimumNuevot.replace(/"/g, "");
+                        averaget.innerText = averageNuevot.replace(/"/g, "");
                        var myConfig = {
                            "type": "line",
                            "scale-x": {
@@ -1416,6 +1485,10 @@
                         const valuest = Object.values(tiempoValues);
                         var puntos = [];
                         var texto = "";
+                        var listaCalcularPromediohs = [];
+                        var numPromediohs = 0;
+                        var numMaxhs = 0;
+                        var numMinhs = 0;
                         if (diasEntreFechas.length > 1) {
                             texto = "Fecha";
                             for (var i = 0; i < diasEntreFechas.length; i++) {
@@ -1453,18 +1526,9 @@
                                 }
                                 //console.log(i,"-",humedadLista);
                                 var promedio = calcularPromedio(humedadLista);
+                                listaCalcularPromediohs.push(promedio);
                                 if (humedadLista.length === 0) {
-                                    //console.log("entro");
                                     promedio = 0;
-                                    //console.log(i, "-",Math.round(promedio));
-                                    //let fechacompleta = new Date(y, m-1, d);
-                                    //var fechacompletaformateada = fechacompleta.toISOString().slice(0, 10);
-                                    //console.log("fechacompleta",fechacompleta.toISOString().slice(0, 10));
-                                    //var puntounico = [];
-                                    //puntounico.push(fechacompletaformateada);
-                                    //puntounico.push(Math.round(promedio));
-
-                                    //puntos.push(puntounico);
                                 }
                                 else {
                                     //console.log(i, "-",Math.round(promedio));
@@ -1480,7 +1544,11 @@
                                 
                                 
                             }
-                            //console.log(puntos);
+                            if(listaCalcularPromediohs.length !== 0){
+                                numPromediohs = calcularPromedio(listaCalcularPromediohs);
+                                numMaxhs = findMax(listaCalcularPromediohs);
+                                numMinhs = findMin(listaCalcularPromediohs);
+                            }
                         }
                         else {
                             texto="Tiempo (h)";
@@ -1530,13 +1598,27 @@
                                 //console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
                                 const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(humedadValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
                                 ////console.log("cada punto", punto);
+                                listaCalcularPromediohs.push(parseInt(humedadValues[posiciones[i]]));
                                 puntos.push(punto); // Agregar el punto a la lista de puntos
                             }
                             //console.log("puntos", puntos); // Imprimir los puntos resultantes
                             var minimo = Math.min(...ejeHumedad) - 1;
                             var maximo = Math.max(...ejeHumedad) + 1;
+                            if(listaCalcularPromediohs.length !== 0){
+                                numPromediohs = calcularPromedio(listaCalcularPromediohs);
+                                numMaxhs = findMax(listaCalcularPromediohs);
+                                numMinhs = findMin(listaCalcularPromediohs);
+                            }
                         }
-                        //console.log("puntos", puntos);
+                        var maximumhs = document.getElementById("valor-maxhs");
+                        var minimumhs = document.getElementById("valor-minhs");
+                        var averagehs = document.getElementById("valor-promediohs");
+                        const maximumNuevohs = JSON.stringify("Valor máximo: " + Math.round(numMaxhs));
+                        const minimumNuevohs = JSON.stringify("Valor mínimo: " + Math.round(numMinhs));
+                        const averageNuevohs = JSON.stringify("Promedio: " + parseFloat(numPromediohs.toFixed(2)));
+                        maximumhs.innerText = maximumNuevohs.replace(/"/g, "");
+                        minimumhs.innerText = minimumNuevohs.replace(/"/g, "");
+                        averagehs.innerText = averageNuevohs.replace(/"/g, "");
 
                         var myConfig = {
                             "type": "line",
@@ -1871,29 +1953,74 @@
             var contenidoTemperatura = document.getElementById("verview-shart-t");
             var contenidoHSuelo = document.getElementById("verview-shart-hs");
             var contenidoLuz = document.getElementById("verview-shart-luz");
+            var valor_minimo = document.getElementById("valor-min");
+            var valor_maximo = document.getElementById("valor-max");
+            var valor_promedio = document.getElementById("valor-promedio");
+            var valor_minimot = document.getElementById("valor-mint");
+            var valor_maximot = document.getElementById("valor-maxt");
+            var valor_promediot = document.getElementById("valor-promediot");
+            var valor_minimohs = document.getElementById("valor-minhs");
+            var valor_maximohs = document.getElementById("valor-maxhs");
+            var valor_promediohs = document.getElementById("valor-promediohs");
             
             if (selectedValue === "0") {
                 contenidoLuz.style.display = "none";
                 contenidoHumedad.style.display = "block";
                 contenidoHSuelo.style.display = "none";
                 contenidoTemperatura.style.display = "none";
+                valor_minimo.style.display = "block";
+                valor_maximo.style.display = "block";
+                valor_promedio.style.display = "block";
+                valor_minimot.style.display = "none";
+                valor_maximot.style.display = "none";
+                valor_promediot.style.display = "none";
+                valor_minimohs.style.display = "none";
+                valor_maximohs.style.display = "none";
+                valor_promediohs.style.display = "none";
             } else if (selectedValue === "1") {
                 contenidoLuz.style.display = "none";
                 contenidoHumedad.style.display = "none";
                 contenidoTemperatura.style.display = "block";
                 contenidoHSuelo.style.display = "none";
+                valor_minimo.style.display = "none";
+                valor_maximo.style.display = "none";
+                valor_promedio.style.display = "none";
+                valor_minimot.style.display = "block";
+                valor_maximot.style.display = "block";
+                valor_promediot.style.display = "block";
+                valor_minimohs.style.display = "none";
+                valor_maximohs.style.display = "none";
+                valor_promediohs.style.display = "none";
             }
             else if (selectedValue === "2") {
                 contenidoLuz.style.display = "none";
                 contenidoHumedad.style.display = "none";
                 contenidoHSuelo.style.display = "block";
                 contenidoTemperatura.style.display = "none";
+                valor_minimo.style.display = "none";
+                valor_maximo.style.display = "none";
+                valor_promedio.style.display = "none";
+                valor_minimot.style.display = "none";
+                valor_maximot.style.display = "none";
+                valor_promediot.style.display = "none";
+                valor_minimohs.style.display = "block";
+                valor_maximohs.style.display = "block";
+                valor_promediohs.style.display = "block";
             }
             else if (selectedValue === "3") {
                 contenidoLuz.style.display = "block";
                 contenidoHumedad.style.display = "none";
                 contenidoHSuelo.style.display = "none";
                 contenidoTemperatura.style.display = "none";
+                valor_minimo.style.display = "none";
+                valor_maximo.style.display = "none";
+                valor_promedio.style.display = "none";
+                valor_minimot.style.display = "none";
+                valor_maximot.style.display = "none";
+                valor_promediot.style.display = "none";
+                valor_minimohs.style.display = "none";
+                valor_maximohs.style.display = "none";
+                valor_promediohs.style.display = "none";
             }
         }
     </script>
