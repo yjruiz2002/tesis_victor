@@ -931,15 +931,13 @@
 
                                     puntos.push(puntounico);
                                 }
-                                
-                                
                             }
+                            listaCalcularPromedio = listaCalcularPromedio.filter(valor => !isNaN(valor));
                             if(listaCalcularPromedio.length !== 0){
                                 numPromedio = calcularPromedio(listaCalcularPromedio);
                                 numMax = findMax(listaCalcularPromedio);
                                 numMin = findMin(listaCalcularPromedio);
                             }
-                            
                         }
                         else {
                             texto="Tiempo (h)";
@@ -958,7 +956,6 @@
                                     }
                                 }
                             }
-
                             //console.log("posiciones", posiciones);
                             const elementost = valuest.slice(-10);
                             //console.log("tiempo", elementost);
@@ -975,26 +972,22 @@
                             }
                             const listaHorasNew = listaHoras.map(str => parseInt(str));
                             const listaMinNew = listaMin.map(str => parseInt(str));
-                            ////console.log("Fechas:", listaHorasNew);
-                            ////console.log("Rangos:", humedadValues);
                             var ejeHumedad = []; 
                             for (var i = 0; i < posiciones.length; i++) {
                                 ejeHumedad.push(parseInt(humedadValues[posiciones[i]]));
                                 var minutosTotales = parseInt(listaHorasNew[posiciones[i]]) * 60 + parseInt(listaMinNew[posiciones[i]]);
                                 var minimoMinutos = Math.floor(minutosTotales / 60) * 60; // Redondear hacia abajo a la hora más cercana
                                 var maximoMinutos = minimoMinutos + 60; // Sumar 60 minutos para obtener la siguiente hora
-
                                 var valorEnEscalaLarge = ((minutosTotales - minimoMinutos) / (maximoMinutos - minimoMinutos));
                                 var valorEnEscala = listaMinNew[posiciones[i]] / 100;
-                                //console.log(parseInt(listaHorasNew[posiciones[i]]), "-", parseInt(listaMinNew[posiciones[i]]), "-", minutosTotales, "-", valorEnEscala+parseInt(listaHorasNew[posiciones[i]]));
                                 const punto = [valorEnEscala+parseInt(listaHorasNew[posiciones[i]]), parseInt(humedadValues[posiciones[i]])]; // Crear el punto [x, y] a partir de los elementos correspondientes de las listas
                                 listaCalcularPromedio.push(parseInt(humedadValues[posiciones[i]]));
-                                ////console.log("cada punto", punto);
                                 puntos.push(punto); // Agregar el punto a la lista de puntos
                             }
                             //console.log("puntos", puntos); // Imprimir los puntos resultantes
                             var minimo = Math.min(...ejeHumedad) - 1;
                             var maximo = Math.max(...ejeHumedad) + 1;
+                            listaCalcularPromedio = listaCalcularPromedio.filter(valor => !isNaN(valor));
                             if(listaCalcularPromedio.length !== 0){
                                 numPromedio = calcularPromedio(listaCalcularPromedio);
                                 numMax = findMax(listaCalcularPromedio);
@@ -1243,6 +1236,7 @@
                                 
                                 
                             }
+                            listaCalcularPromediot = listaCalcularPromediot.filter(valor => !isNaN(valor));
                             if(listaCalcularPromediot.length !== 0){
                                 numPromediot = calcularPromedio(listaCalcularPromediot);
                                 numMaxt = findMax(listaCalcularPromediot);
@@ -1304,12 +1298,15 @@
                             //console.log("puntos", puntos); // Imprimir los puntos resultantes
                             var minimo = Math.min(...ejeTemperatura) - 1;
                             var maximo = Math.max(...ejeTemperatura) + 1;
+                            listaCalcularPromediot = listaCalcularPromediot.filter(valor => !isNaN(valor));
                             if(listaCalcularPromediot.length !== 0){
                                 numPromediot = calcularPromedio(listaCalcularPromediot);
                                 numMaxt = findMax(listaCalcularPromediot);
                                 numMint = findMin(listaCalcularPromediot);
                             }
                         }
+
+                        console.log(listaCalcularPromediot);
                         console.log(numPromediot);
                         console.log(numMaxt); 
                         console.log(numMint); 
@@ -1544,6 +1541,7 @@
                                 
                                 
                             }
+                            listaCalcularPromediohs = listaCalcularPromediohs.filter(valor => !isNaN(valor));
                             if(listaCalcularPromediohs.length !== 0){
                                 numPromediohs = calcularPromedio(listaCalcularPromediohs);
                                 numMaxhs = findMax(listaCalcularPromediohs);
@@ -1604,6 +1602,7 @@
                             //console.log("puntos", puntos); // Imprimir los puntos resultantes
                             var minimo = Math.min(...ejeHumedad) - 1;
                             var maximo = Math.max(...ejeHumedad) + 1;
+                            listaCalcularPromediohs = listaCalcularPromediohs.filter(valor => !isNaN(valor));
                             if(listaCalcularPromediohs.length !== 0){
                                 numPromediohs = calcularPromedio(listaCalcularPromediohs);
                                 numMaxhs = findMax(listaCalcularPromediohs);
